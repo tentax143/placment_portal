@@ -1,0 +1,71 @@
+
+{% extends "base.html" %}
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>RIT PLACEMENR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+   
+</head>
+<body>
+ 
+<!-- End vertical navbar -->
+{% block maincontent %}
+<div class="rit"></div>
+
+<!-- Page content holder -->
+<div class="page-content p-5 " id="content">
+  <!-- Toggle button -->
+  <div class="sidebarCollapse">
+    <button id="sidebarCollapse" type="button" class="btn btn-light  rounded-pill shadow-sm px-4 "><i  class="fa fa-bars mr-2 toggleicon"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
+    <a href="" hidden id="django-message">{{message|default:0}}</a>
+</div>
+<br><br>
+
+  <div class="row ">
+    <h5>Dashboard</h5>
+    <div class="container" style="max-width: 1540px; height: 75vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #f5f5f5; border-radius: 15px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); padding: 20px;">
+      <h1 style="color: #343a40; font-size: 36px; font-weight: bold; margin-bottom: 30px;">Welcome, {{ faculty.faculty_name }}!</h1>
+      
+      <div style="display: flex; justify-content: space-between; width: 100%; max-width: 900px; margin-bottom: 30px; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);">
+          <div style="flex: 1; margin-right: 20px;">
+              <h3 style="color: #007bff; font-size: 24px; margin-bottom: 10px;">Faculty Information</h3>
+              <p style="color: #495057; font-size: 18px; margin-bottom: 5px;"><strong>ID:</strong> {{ faculty.faculty_id }}</p>
+              <p style="color: #495057; font-size: 18px; margin-bottom: 5px;"><strong>Email:</strong> {{ faculty.faculty_email }}</p>
+              <p style="color: #495057; font-size: 18px; margin-bottom: 5px;"><strong>Role:</strong> {{ faculty.faculty_role }}</p>
+          </div>
+  
+          <div style="flex: 1; margin-left: 20px;">
+              <h3 style="color: #007bff; font-size: 24px; margin-bottom: 10px;">Department</h3>
+              <p style="color: #495057; font-size: 18px; margin-bottom: 5px;"><strong>Department:</strong> {{ faculty_dept }}</p>
+          </div>
+      </div>
+  
+      <div style="display: flex; justify-content: center; width: 100%; max-width: 900px;">
+          <button style="background-color: #28a745; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 18px; cursor: pointer; transition: background-color 0.3s;">
+              Manage Profile
+          </button>
+          <button style="background-color: #007bff; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 18px; cursor: pointer; margin-left: 15px; transition: background-color 0.3s;">
+              View Dashboard
+          </button>
+      </div>
+  </div>
+  
+
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}
+
+<!-- End demo content -->
+</body>
+</html>

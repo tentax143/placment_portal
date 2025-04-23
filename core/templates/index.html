@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            background-image: url("static/images/background.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .custom-btn {
+    background-color: #005073;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-btn:hover {
+    background-color: #007399;
+    color: #fff;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+/* Card link styling */
+.custom-card {
+    text-decoration: none;
+    display: block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-card .card {
+    background-color: #005073;
+    border-radius: 10px;
+    color: white;
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+.custom-card .card:hover {
+    background-color: #007399;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+}
+
+.custom-card .card-body h5 {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Heading styling */
+h1 {
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 2px;
+}
+
+    </style>
+    <title>Login</title>
+</head>
+<body>
+    <div class="rit">
+        <img src="{% static 'images/rit.jpg' %}" style="width: 100%;" alt="">
+    </div>
+   
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <a href="http://172.16.1.5:9000" class="btn btn-primary btn-lg custom-btn">
+            E-GOVERNANCE
+        </a>
+    </div>
+    <div class="text-center mb-5">
+        <h1 class="display-5 text-primary font-weight-bold">RIT Placement Management Login</h1>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-3 mb-4">
+            <a href="{% url 'student_login' %}" class="custom-card">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="font-weight-bold text-white">Student</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="{% url 'staff_login' %}" class="custom-card">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="font-weight-bold text-white">Faculty Member / Student Co-ordinator</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+           
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

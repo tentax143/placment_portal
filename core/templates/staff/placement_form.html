@@ -1,0 +1,898 @@
+
+{% extends "base.html" %}
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    {% block maincontent %}
+    <title>RIT PLACEMENT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    <link rel="stylesheet" href="{% static 'css1/samplefromstyle.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/css/multi-select-tag.css">
+   
+   
+</head>
+
+<style>
+    /* Style the original select box */
+    #countries {
+        display: none; /* Hide the original select if the plugin replaces it */
+    }
+
+    /* Style the generated multiselect input container */
+    .multiselect-wrapper {
+        width: 300px; /* Set the desired width */
+        height: 50px; /* Set the desired height */
+    }
+
+    /* Style the dropdown that opens up */
+    .multiselect-dropdown {
+        width: 300px; /* Set the same width as the input */
+        max-height: 200px; /* Limit the dropdown height */
+        overflow-y: auto;  /* Enable scrolling for large lists */
+        border: 1px solid #ccc; /* Optional border */
+        border-radius: 5px; /* Optional border-radius */
+    }
+
+    /* Style individual items in the dropdown */
+    .multiselect-item {
+        padding: 5px;  /* Add some padding to dropdown items */
+        font-size: 14px; /* Adjust font size */
+    }
+</style>
+
+
+<body>
+ 
+<!-- End vertical navbar -->
+
+<div class="rit"></div>
+
+<!-- Page content holder -->
+<div class="page-content p-5 " id="content">
+  <!-- Toggle button -->
+  <div class="sidebarCollapse">
+    <button id="sidebarCollapse" type="button" class="btn btn-light  rounded-pill shadow-sm px-4 "><i  class="fa fa-bars mr-2 toggleicon"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
+    <a href="" hidden id="django-message">{{message|default:0}}</a>
+</div>
+<br><br>
+
+  <div class="row ">
+    <h5>Placement Form</h5>
+    <div id="willingness-check">
+        <!-- Check if willingness exists -->
+        <label for="willingness-check">Has Willingness Given?</label>
+        <select id="willingness" onchange="toggleForms()">
+            <option value="" hidden>Select Option</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+    </div>
+   
+        <div class="container" id="container">
+            <form id="placementForm" enctype="multipart/form-data">
+    
+                <!-- Student -->
+                <div class="availability-input-field" style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <label for="student" style="width: 150px; margin-right: 10px;">Register No:</label>
+                    <div style="position: relative; min-width: 0;">
+                        <input type="text" id="studentSearch" placeholder="Type Reg.no to filter..." 
+                               style="width: 200px; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                        <select id="student" name="student_reg_id" size="5" 
+                                style="position: absolute; top: 100%; left: 0; width: 200px; display: none; z-index: 10;"> 
+                            <option value="" disabled selected>Select a student</option>
+                            {% for student in students %}
+                                <option value="{{ student.reg_no }}">{{ student.reg_no }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="button" id="fetchCompanies" class="btn btn-info" style="margin-left: 5px;">Search</button>
+                </div>
+                
+    
+            
+                <!-- Company Name -->
+                <div class="availability-input-field" style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <label for="company" style="width: 150px; margin-right: 10px;">Company Name:</label>
+                    <select id="company" name="company_id" style="width: 200px; min-width: 0;">
+                        <option value="">Select Company</option>
+                        <!-- Populated via AJAX -->
+                        {% for company in companies %}
+                        <option value="{{ company.company_id }}">{{ company.company_name }}</option>
+                      {% endfor %}
+                    </select>
+                </div>
+            
+                <div class="availability-input-field" id="companyLocation" style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <label for="company_location" style="width: 150px; margin-right: 10px;">Location:</label>
+                    <input type="text" id="company_location" name="company_location" style="width: 200px; min-width: 0;">
+                </div>
+            
+                <!-- Attended -->
+                <div class="availability-input-field" style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <label for="attended" style="width: 150px; margin-right: 10px;">Attended:</label>
+                    <select id="attended" name="attended" style="width: 200px; min-width: 0;">
+                        <option value="" disabled selected>Select an Option</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            
+                <!-- Pass Section -->
+                <div class="availability-input-field" id="passSection" style="display:none; margin-bottom: 15px;">
+                    <label for="pass" style="width: 150px; margin-right: 10px;">Pass:</label>
+                    <select id="pass" name="pass" style="width: 200px; min-width: 0;">
+                        <option value="" disabled selected>Select an Option</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            
+                <!-- Rounds Section -->
+                <div class="availability-input-field" id="roundsSection" style="display:none; margin-bottom: 15px;">
+                    <label for="rounds" style="width: 150px; margin-right: 10px;">Rounds:</label>
+                    <select id="rounds" name="rounds" style="width: 200px; min-width: 0;">
+                        <option value="" disabled selected>Select an Option</option>
+                        <option value="Round 1">Round 1</option>
+                        <option value="Round 2">Round 2</option>
+                        <option value="Round 3">Round 3</option>
+                        <option value="Round 4">Round 4</option>
+                    </select>
+                </div>
+            
+                <!-- Placement Offer Section -->
+                <div class="availability-input-field" id="placementOfferSection" style="display:none; margin-bottom: 15px;">
+                    <label for="placement_offer" style="width: 150px; margin-right: 10px;">Placement Type:</label>
+                    <select id="placement_offer" name="placement_offer" style="width: 200px; min-width: 0;">
+                        <option value="" disabled selected>Select an Option</option>
+                        <option value="Internship Offer">Internship Offer</option>
+                        <option value="Internship + Placement Offer">Internship + Placement Offer</option>
+                        <option value="Placement Offer">Placement Offer</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            
+                <div class="availability-input-field" id="jobDomainSection" style="display:none; margin-bottom: 15px;">
+                    <label for="job_domain" style="width: 150px; margin-right: 10px;">Job Domain:</label>
+                    <select id="job_domain" name="job_domain" style="width: 200px; min-width: 0;">
+                        <option value="" disabled selected>Select an Option</option>
+                        <option value="Core">Core</option>
+                        <option value="Non - Core">Non - Core</option>
+                    </select>
+                </div>
+            
+                <div class="availability-input-field" id="jobRoleSection" style="display:none; margin-bottom: 15px;">
+                    <label for="job_type" style="width: 150px; margin-right: 10px;">Job Role Type:</label>
+                    <select id="job_type" name="job_type" style="width: 200px; min-width: 0;">
+                        <option value="" disabled selected>Select an Option</option>
+
+                    {% for role in roles %}
+                  <option value="{{ role.role_name }}">{{ role.role_name }}</option>
+                {% endfor %}
+                    </select>
+                </div>
+            
+                <div class="availability-input-field" id="companyTypeSection" style="display:none; margin-bottom: 15px;">
+                    <label for="company_type" style="width: 150px; margin-right: 10px;">Company Type:</label>
+                    <select id="company_type" name="company_type" style="width: 200px; min-width: 0;">
+                        <option value="" disabled selected>Select an Option</option>
+                        <option value="Internship Offer">Product based</option>
+                        <option value="Internship + Placement Offer">Service based</option>
+                        <option value="Placement Offer">MNC</option>
+                        <option value="No">Startup</option>
+                    </select>
+                </div>
+            
+                <!-- CTC Section -->
+                <!-- <div class="availability-input-field" id="ctcSection" style="display:none; margin-bottom: 15px;">
+                    <label for="ctc" style="width: 150px; margin-right: 10px;">CTC:</label>
+                    <input type="number" id="ctc" name="ctc" style="width: 200px; min-width: 0;">
+                </div>
+            
+                <div class="availability-input-field" id="stipendSection" style="display:none; margin-bottom: 15px;">
+                    <label for="stipend" style="width: 150px; margin-right: 10px;">Stipend:</label>
+                    <input type="number" id="stipend" name="stipend" style="width: 200px; min-width: 0;">
+                </div> -->
+
+                <div class="availability-input-field" id="ctcSection" style="display:none; margin-bottom: 15px;">
+                    <label for="ctc" style="width: 150px; margin-right: 10px;">CTC:</label>
+                    <input type="text" id="ctc" name="ctc" style="width: 200px; min-width: 0;" placeholder="Enter CTC">
+                </div>
+                
+                <div class="availability-input-field" id="stipendSection" style="display:none; margin-bottom: 15px;">
+                    <label for="stipend" style="width: 150px; margin-right: 10px;">Stipend:</label>
+                    <input type="text" id="stipend" name="stipend" style="width: 200px; min-width: 0;" placeholder="Enter Stipend">
+                </div>
+                
+            
+                <div class="availability-input-field" id="offerLetterSection" style="display:none; margin-bottom: 15px;">
+                    <label for="offer_letter" style="width: 150px; margin-right: 10px;">Offer Letter:</label>
+                    <input type="file" id="offer_letter" name="offer_letter" accept="application/pdf" style="width: 200px; min-width: 0;">
+                </div>
+            
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit">Submit</button>
+            </form>
+           
+            
+        </div>
+        <div class="container" id="container2">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCompanyModal">
+                Add Company
+              </button>
+
+<!-- Add Company Modal -->
+<div class="modal fade" id="addCompanyModal" tabindex="-1" role="dialog" aria-labelledby="addCompanyModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addCompanyModalLabel">Add Company</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="addCompanyForm" method="POST" enctype="multipart/form-data" action="{% url 'add_company' %}">
+            {% csrf_token %}
+  
+            <!-- Company Name -->
+            <div class="availability-input-field">
+              <label for="company-name">Company Name:</label>
+              <input type="text" id="company-name" name="company_name" required>
+            </div>
+  
+            <!-- Company Role -->
+            <div class="availability-input-field">
+              <label for="company-role">Role:</label>
+              <input type="text" id="company-role" name="company_role" required>
+            </div>
+  
+            <!-- Company Location -->
+            <div class="availability-input-field">
+              <label for="company-location">Location:</label>
+              <input type="text" id="company-location" name="company_location" required>
+            </div>
+  
+            <!-- Company Skill Set -->
+            <div class="availability-input-field">
+              <label for="company-skill">Skill Set:</label>
+              <input type="text" id="company-skill" name="company_skill" required>
+            </div>
+  
+            <!-- Company Eligibility -->
+            <div class="availability-input-field">
+              <label for="company-eligibility">Eligibility:</label>
+              <input type="text" id="company-eligibility" name="company_eligibility" required>
+            </div>
+  
+            <!-- Company Eligibility Department -->
+            <div class="availability">
+              <label for="company-eligibility-dept">Eligibility Department:</label>
+              <select name="company_eligibility_dept" id="Department" style="height: 150px; width: 100%;">
+                <option value="B.TECH AD">AD-ARTIFICIAL INTELLIGENCE AND DATA SCIENCE</option>
+                <option value="B.E CIVIL">CE-CIVIL ENGINEERING</option>
+                <option value="B.TECH CSBS">CB-COMPUTER SCIENCE AND BUSINESS SYSTEM</option>
+                <option value="B.E CSE">CS-COMPUTER SCIENCE AND ENGINEERING</option>
+                <option value="B.E EEE">EE-ELECTRICAL AND ELECTRONICS ENGINEERING</option>
+                <option value="B.E ECE">EC-ELECTRONICS AND COMMUNICATION ENGINEERING</option>
+                <option value="B.TECH IT">IT-INFORMATION TECHNOLOGY</option>
+                <option value="B.E MECH">ME-MECHANICAL ENGINEERING</option>
+              </select>
+            </div>
+  
+            <!-- Academic Year -->
+            <div class="availability-input-field">
+              <label for="company-academic-year">Academic Year:</label>
+              <select name="company_academic_year" id="company-academic-year">
+                <option value="" hidden selected>Select Batch</option>
+                <!-- Add options dynamically or hardcoded -->
+              </select>
+            </div>
+  
+            <!-- Opening Date -->
+            <div class="availability-input-field">
+              <label for="company-opening-date">Opening Date:</label>
+              <input type="date" id="company-opening-date" name="company_opening_date">
+            </div>
+  
+            <!-- Last Date -->
+            <div class="availability-input-field">
+              <label for="company-last-date">Last Date:</label>
+              <input type="date" id="company-last-date" name="company_last_date">
+            </div>
+  
+            <!-- CTC -->
+            <div class="availability-input-field">
+              <label for="company-ctc">CTC:</label>
+              <input type="text" id="company-ctc" name="company_ctc">
+            </div>
+  
+            <!-- Company Image -->
+            <div class="availability-input-field">
+              <label for="company-image">Company Image:</label>
+              <input type="file" id="company-image" name="company_image">
+            </div>
+  
+            <!-- Company Description -->
+            <div class="availability-input-field wide-textarea">
+              <label for="company-description">Detailed Description:</label>
+              <textarea id="company-description" name="company_description" rows="5" required></textarea>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn-submit">Add Company</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+
+  <!-- Add Placement Modal -->
+<div class="modal fade" id="addPlacementModal" tabindex="-1" role="dialog" aria-labelledby="addPlacementModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addPlacementModalLabel">Add Placement</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="addPlacementForm" method="POST" enctype="multipart/form-data"  >
+            {% csrf_token %}
+                
+            <!-- Student Registration Number -->
+            <div class="availability-input-field" style="display: flex; align-items: center; margin-bottom: 15px;">
+              <label for="student_reg_id" style="width: 150px; margin-right: 10px;">Student Reg No:</label>
+              <input type="text" id="student_reg_id" name="student_reg_id" required style="width: 200px; min-width: 0;">
+            </div>
+  
+            <!-- Company Name -->
+            <div class="availability-input-field" style="display: flex; align-items: center; margin-bottom: 15px;">
+              <label for="company" style="width: 150px; margin-right: 10px;">Company Name:</label>
+              <select id="company" name="company_id" required style="width: 200px; min-width: 0;">
+                <option value="">Select Company</option>
+                <!-- Populated via AJAX -->
+                {% for company in companies %}
+                  <option value="{{ company.company_id }}">{{ company.company_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            
+            <div class="availability-input-field" id="companyLocation" style="display: flex; align-items: center; margin-bottom: 15px;">
+              <label for="company_location" style="width: 150px; margin-right: 10px;">Location:</label>
+              <input type="text" id="company_location" name="company_location" style="width: 200px; min-width: 0;">
+            </div>
+  
+            <!-- Attended -->
+            <div class="availability-input-field" style="display: flex; align-items: center; margin-bottom: 15px;">
+              <label for="attended" style="width: 150px; margin-right: 10px;">Attended:</label>
+              <select id="attended1" name="attended" required style="width: 200px; min-width: 0;">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+  
+            <!-- Pass Section -->
+            <div class="availability-input-field" id="passSection1" style="display:none; margin-bottom: 15px;">
+              <label for="pass" style="width: 150px; margin-right: 10px;">Pass:</label>
+              <select id="pass1" name="pass" style="width: 200px; min-width: 0;">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+  
+            <!-- Rounds Section -->
+            <div class="availability-input-field" id="roundsSection1" style="display:none; margin-bottom: 15px;">
+              <label for="rounds" style="width: 150px; margin-right: 10px;">Rounds:</label>
+              <select id="rounds" name="rounds" style="width: 200px; min-width: 0;">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Round 1">Round 1</option>
+                <option value="Round 2">Round 2</option>
+                <option value="Round 3">Round 3</option>
+                <option value="Round 4">Round 4</option>
+              </select>
+            </div>
+  
+            <!-- Placement Offer Section -->
+            <div class="availability-input-field" id="placementOfferSection1" style="display:none; margin-bottom: 15px;">
+              <label for="placement_offer" style="width: 150px; margin-right: 10px;">Placement Type:</label>
+              <select id="placement_offer1" name="placement_offer" style="width: 200px; min-width: 0;">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Internship Offer">Internship Offer</option>
+                <option value="Internship + Placement Offer">Internship + Placement Offer</option>
+                <option value="Placement Offer">Placement Offer</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+  
+            <div class="availability-input-field" id="jobDomainSection1" style="display:none; margin-bottom: 15px;">
+              <label for="job_domain" style="width: 150px; margin-right: 10px;">Job Domain:</label>
+              <select id="job_domain1" name="job_domain" style="width: 200px; min-width: 0;">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Core">Core</option>
+                <option value="Non - Core">Non - Core</option>
+              </select>
+            </div>
+  
+            <div class="availability-input-field" id="jobRoleSection1" style="display:none; margin-bottom: 15px;">
+              <label for="job_type" style="width: 150px; margin-right: 10px;">Job Role Type:</label>
+              <select id="job_type1" name="job_type" style="width: 200px; min-width: 0;">
+                <option value="" disabled selected>Select an Option</option>
+                {% for role in roles %}
+                <option value="{{ role.role_name }}">{{ role.role_name }}</option>
+              {% endfor %}
+              </select>
+            </div>
+  
+            <div class="availability-input-field" id="companyTypeSection1" style="display:none; margin-bottom: 15px;">
+              <label for="company_type" style="width: 150px; margin-right: 10px;">Company Type:</label>
+              <select id="company_type1" name="company_type" style="width: 200px; min-width: 0;">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Product based">Product based</option>
+                <option value="Service based">Service based</option>
+                <option value="MNC">MNC</option>
+                <option value="Startup">Startup</option>
+              </select>
+            </div>
+  
+            <!-- CTC Section -->
+            <!-- <div class="availability-input-field" id="ctcSection1" style="display:none; margin-bottom: 15px;">
+              <label for="ctc" style="width: 150px; margin-right: 10px;">CTC:</label>
+              <input type="number" id="ctc1" name="ctc" style="width: 200px; min-width: 0;">
+            </div>
+  
+            <div class="availability-input-field" id="stipendSection1" style="display:none; margin-bottom: 15px;">
+              <label for="stipend" style="width: 150px; margin-right: 10px;">Stipend:</label>
+              <input type="number" id="stipend1" name="stipend" style="width: 200px; min-width: 0;">
+            </div> -->
+
+            <div class="availability-input-field" id="ctcSection1" style="display:none; margin-bottom: 15px;">
+                <label for="ctc" style="width: 150px; margin-right: 10px;">CTC:</label>
+                <input type="text" id="ctc1" name="ctc" style="width: 200px; min-width: 0;" placeholder="Enter CTC">
+            </div>
+            
+            <div class="availability-input-field" id="stipendSection1" style="display:none; margin-bottom: 15px;">
+                <label for="stipend" style="width: 150px; margin-right: 10px;">Stipend:</label>
+                <input type="text" id="stipend1" name="stipend" style="width: 200px; min-width: 0;" placeholder="Enter Stipend">
+            </div>
+            
+  
+            <div class="availability-input-field" id="offerLetterSection1" style="display:none; margin-bottom: 15px;">
+              <label for="offer_letter" style="width: 150px; margin-right: 10px;">Offer Letter:</label>
+              <input type="file" id="offer_letter1" name="offer_letter" accept="application/pdf" style="width: 200px; min-width: 0;">
+            </div>
+  
+            <!-- Submit Button -->
+            <button type="submit" class="btn-submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add Placement Button -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPlacementModal">
+    Add Placement
+  </button>
+  
+
+        </div>
+    
+    
+</div>
+</div>
+<script>
+    // Function to validate float input with two decimal places
+function validateTwoDecimals(input) {
+    let value = input.value;
+    console.log("At the validation point")
+    // Regular expression to allow floats with up to two decimal places
+    const isValid = /^\d+(\.\d{1,2})?$/.test(value);
+    if (!isValid) {
+        alert('Please enter a valid number with up to two decimal places');
+        input.value = ''; // Clear the input if it's invalid
+    }
+}
+
+// Event listener for CTC input 
+document.getElementById('ctc').addEventListener('blur', function() {
+    validateTwoDecimals(this);
+});
+
+// Event listener for Stipend input
+document.getElementById('stipend').addEventListener('blur', function() {
+    validateTwoDecimals(this);
+});
+
+document.getElementById('ctc1').addEventListener('blur', function() {
+    validateTwoDecimals(this);
+});
+
+// Event listener for Stipend input
+document.getElementById('stipend1').addEventListener('blur', function() {
+    validateTwoDecimals(this);
+});
+</script>
+<script>
+    const currentYear = new Date().getFullYear();
+    const startYear = 2018;
+    const yearSelect = document.getElementById('company-academic-year');
+    
+    for (let year = currentYear; year >= startYear; year--) {
+        const option = document.createElement('option');
+        const endYear = (year + 4).toString(); // Get last two digits of the end year
+        option.value = year + '-' + endYear;
+        option.textContent = year + '-' + endYear;
+        yearSelect.appendChild(option);
+    }
+</script>
+<script>
+    $('#addCompanyForm').on('submit', function(event) {
+        event.preventDefault();  // Prevent default form submission
+    
+        var formData = new FormData(this);
+        
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                // Handle success, e.g., close modal, reload placement details
+                $('#addCompanyModal').modal('hide');
+                location.reload();  // Reload page to show updated companies list
+            },
+            error: function(error) {
+                // Handle error
+                console.log(error);
+            }
+        });
+    });
+</script>
+<script>
+    window.onload = function() {
+        const willingnessForm = document.getElementById("container");
+        const nonWillingnessForm = document.getElementById("container2");
+        willingnessForm.style.display = "block";
+        nonWillingnessForm.style.display = "none";
+        function toggleForms() {
+            const willingness = document.getElementById("willingness").value;
+            const willingnessForm = document.getElementById("container");
+            const nonWillingnessForm = document.getElementById("container2");
+
+            if (willingness === "Yes") {
+                willingnessForm.style.display = "block";
+                nonWillingnessForm.style.display = "none";
+            } else if (willingness === "No") {
+                willingnessForm.style.display = "none";
+                nonWillingnessForm.style.display = "block";
+            }
+            else{
+                willingnessForm.style.display = "block";
+                nonWillingnessForm.style.display = "none";
+            }
+        }
+
+        // Attach the toggle function to the onchange event
+        document.getElementById("willingness").onchange = toggleForms;
+    };
+</script>
+<script>
+    const studentSearch = document.getElementById('studentSearch');
+const studentSelect = document.getElementById('student');
+
+// Show the dropdown when the input is focused
+studentSearch.addEventListener('focus', function() {
+    studentSelect.style.display = 'block'; 
+});
+
+// Filter the student options based on the input
+studentSearch.addEventListener('input', function() {
+    const filter = studentSearch.value.toLowerCase();
+    const options = studentSelect.options;
+
+    let matchFound = false; // Track if a match is found
+
+    // Loop through all options and filter based on the search
+    for (let i = 0; i < options.length; i++) {
+        const option = options[i];
+        if (option.value && option.text.toLowerCase().includes(filter)) {
+            option.style.display = 'block';
+            matchFound = true;
+        } else {
+            option.style.display = 'none';
+        }
+    }
+
+    // Hide the dropdown if no matches are found
+    studentSelect.style.display = matchFound ? 'block' : 'none';
+});
+
+// Handle the student selection
+studentSelect.addEventListener('change', function() {
+    studentSearch.value = studentSelect.options[studentSelect.selectedIndex].text; // Update input value
+    studentSelect.style.display = 'none'; // Hide dropdown
+});
+
+// Hide the dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    if (!studentSearch.contains(event.target) && !studentSelect.contains(event.target)) {
+        studentSelect.style.display = 'none';
+    }
+});
+
+</script>
+<script>
+    document.getElementById('fetchCompanies').addEventListener('click', function() {
+        const studentId = document.getElementById('student').value;
+        if (!studentId) {
+            alert('Please select a student.');
+            return;
+        }
+    
+        // AJAX request to fetch companies
+        fetch(`/fetch_companies/${studentId}/`, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.companies) {
+                const companySelect = document.getElementById('company');
+                companySelect.innerHTML = ''; // Clear the existing options
+    
+                // Populate the company dropdown with new data
+                data.companies.forEach(company => {
+                    const option = document.createElement('option');
+                    option.value = company.company_id;
+                    option.textContent = company.company_name;
+                    companySelect.appendChild(option);
+                });
+    
+                // Optionally populate the company location
+                if (data.companies[0]) {
+                    document.getElementById('company_location').value = data.companies[0].company_location || '';
+                }
+            } else {
+                alert('No companies found for this student.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching companies:', error);
+        });
+    });
+    
+</script>
+<script>
+    console.log("OHHH hee haaa");
+    document.addEventListener('DOMContentLoaded', function() {
+        //For second Tpye ============================================================================================================
+
+        console.log("Hello");
+        // Toggle visibility for Pass and Rounds sections based on "Attended" selection
+        document.getElementById('attended1').addEventListener('change', function () {
+            console.log("pressed pa");
+            var attended1 = this.value;
+            if (attended1 === 'Yes') {
+                document.getElementById('passSection1').style.display = 'block';
+            } else {
+                document.getElementById('passSection1').style.display = 'none';
+                document.getElementById('roundsSection1').style.display = 'none';
+                document.getElementById('placementOfferSection1').style.display = 'none';
+                document.getElementById('ctcSection1').style.display = 'none';
+            }
+        });
+    
+        // Toggle visibility for Rounds, Placement Offer, and CTC based on "Pass" selection
+        document.getElementById('pass1').addEventListener('change', function () {
+            var pass1 = this.value;
+            if (pass1 === 'Yes') {
+                document.getElementById('roundsSection1').style.display = 'block';
+                document.getElementById('placementOfferSection1').style.display = 'block';
+            } else {
+                document.getElementById('roundsSection1').style.display = 'none';
+                document.getElementById('placementOfferSection1').style.display = 'none';
+            }
+        });
+
+        document.getElementById("placement_offer1").addEventListener("change", function () {
+            var offerLetterSection = document.getElementById("offerLetterSection1");
+            var ctcSection = document.getElementById("ctcSection1");
+            var stipendSection = document.getElementById("stipendSection1");
+            var jobRoleSection = document.getElementById("jobRoleSection1");
+            var companyTypeSection = document.getElementById("companyTypeSection1");
+            var jobDomainSection = document.getElementById("jobDomainSection1");
+
+
+
+            var display1 = this.value;
+            if (display1 === 'Internship Offer') {
+                stipendSection1.style.display = 'block';
+                ctcSection1.style.display = 'none';
+                jobRoleSection1.style.display = 'none';
+                companyTypeSection1.style.display = 'none';
+                jobDomainSection1.style.display = 'none';
+            } else if (display1 === 'Internship + Placement Offer') {
+                stipendSection1.style.display = 'block';
+                ctcSection1.style.display = 'none';
+                jobRoleSection1.style.display = 'block';
+                jobDomainSection1.style.display = 'block';
+                companyTypeSection1.style.display = 'block';
+            } else if (display1 === 'Placement Offer') {
+                stipendSection1.style.display = 'none';
+                ctcSection1.style.display = 'block';
+                jobRoleSection1.style.display = 'block';
+                companyTypeSection1.style.display = 'block';
+                jobDomainSection1.style.display = 'block';
+            } else {
+                stipendSection1.style.display = 'none';
+                ctcSection1.style.display = 'none';
+                ctcSection1.style.display = 'none';
+                jobRoleSection1.style.display = 'none';
+                jobDomainSection1.style.display = 'none';
+            }
+            offerLetterSection1.style.display = 'block'; // Assuming you want to show this section based on some logic
+        });
+            //For second Tpye ============================================================================================================
+        console.log("Hello");
+        // Toggle visibility for Pass and Rounds sections based on "Attended" selection
+        document.getElementById('attended').addEventListener('change', function () {
+            console.log("pressed pa");
+            var attended = this.value;
+            if (attended === 'Yes') {
+                document.getElementById('passSection').style.display = 'block';
+            } else {
+                document.getElementById('passSection').style.display = 'none';
+                document.getElementById('roundsSection').style.display = 'none';
+                document.getElementById('placementOfferSection').style.display = 'none';
+                document.getElementById('ctcSection').style.display = 'none';
+            }
+        });
+    
+        // Toggle visibility for Rounds, Placement Offer, and CTC based on "Pass" selection
+        document.getElementById('pass').addEventListener('change', function () {
+            var pass = this.value;
+            if (pass === 'Yes') {
+                document.getElementById('roundsSection').style.display = 'block';
+                document.getElementById('placementOfferSection').style.display = 'block';
+            } else {
+                document.getElementById('roundsSection').style.display = 'none';
+                document.getElementById('placementOfferSection').style.display = 'none';
+            }
+        });
+
+        document.getElementById("placement_offer").addEventListener("change", function () {
+            var offerLetterSection = document.getElementById("offerLetterSection");
+            var ctcSection = document.getElementById("ctcSection");
+            var stipendSection = document.getElementById("stipendSection");
+            var jobRoleSection = document.getElementById("jobRoleSection");
+            var companyTypeSection = document.getElementById("companyTypeSection");
+            var jobDomainSection = document.getElementById("jobDomainSection");
+
+
+
+            var display = this.value;
+            if (display === 'Internship Offer') {
+                stipendSection.style.display = 'block';
+                ctcSection.style.display = 'none';
+                jobRoleSection.style.display = 'none';
+                companyTypeSection.style.display = 'none';
+                jobDomainSection.style.display = 'none';
+            } else if (display === 'Internship + Placement Offer') {
+                stipendSection.style.display = 'block';
+                ctcSection.style.display = 'none';
+                jobRoleSection.style.display = 'block';
+                jobDomainSection.style.display = 'block';
+                companyTypeSection.style.display = 'block';
+            } else if (display === 'Placement Offer') {
+                stipendSection.style.display = 'none';
+                ctcSection.style.display = 'block';
+                jobRoleSection.style.display = 'block';
+                companyTypeSection.style.display = 'block';
+                jobDomainSection.style.display = 'block';
+            } else {
+                stipendSection.style.display = 'none';
+                ctcSection.style.display = 'none';
+                ctcSection.style.display = 'none';
+                jobRoleSection.style.display = 'none';
+                jobDomainSection.style.display = 'none';
+            }
+            offerLetterSection.style.display = 'block'; // Assuming you want to show this section based on some logic
+        });
+    
+        // Handle form submission using AJAX
+      // Handle form submission using AJAX
+      document.getElementById('placementForm').addEventListener('submit', function (e) {
+            e.preventDefault();  // Prevent default form submission
+
+            var formData = new FormData(this);
+
+            // Adjust the URL to your actual endpoint
+            fetch("{% url 'placement' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Ensure this token is set up correctly
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.success);
+                    location.reload();  // Reload the page or update the DOM as needed
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        document.getElementById('addPlacementForm').addEventListener('submit', function (e) {
+            e.preventDefault();  // Prevent default form submission
+
+            var formData = new FormData(this);
+
+            // Adjust the URL to your actual endpoint
+            fetch("{% url 'placement' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Ensure this token is set up correctly
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.success);
+                    location.reload();  // Reload the page or update the DOM as needed
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+
+
+
+    
+
+
+
+    });
+</script>
+
+<script>
+    console.log("Hello");
+</script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
+
+
+
+
+{% endblock %}
+
+<!-- End demo content -->
+</body>
+</html>

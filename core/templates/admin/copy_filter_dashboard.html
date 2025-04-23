@@ -1,0 +1,577 @@
+{% extends "base.html" %}
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>RIT CGPA TRACKER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/samplefromstyle.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+ 
+<!-- End vertical navbar -->
+{% block maincontent %}
+<style>
+    select {
+        width: 20em;
+        width: 20vw;
+        padding: 7.5px;
+    }
+    .custom-card {
+        flex: 0 0 10.5%; /* 100% / 8 = 12.5% */
+        max-width: 10.5%; /* 100% / 8 = 12.5% */
+        margin: 0.5rem; /* Adjust this to change the spacing between cards */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: to add a subtle shadow */
+    }
+    
+    #department-counts {
+        display: flex; /* Use flexbox to align cards */
+        flex-wrap: wrap; /* Allow wrapping of cards if needed */
+        justify-content: space-between; /* Space cards evenly */
+    }
+    .card {
+        transition: transform 0.2s; /* Animation on hover */
+        height: 200px;
+        width : 0px;
+    }
+    
+    .card:hover {
+        transform: scale(1.05); /* Slight zoom on hover */
+    }
+    
+    .card-top {
+        background-color: #f8f9fa; /* Light background for the header */
+        font-weight: bold;
+    
+    }
+
+    .card-custom {
+        border-radius: 10px;
+        width: 80px;  /* Fixed width */
+        height: 80px; /* Fixed height */
+        padding: 0;
+    }
+    
+    .card-footer-custom {
+        border-radius: 10px 10px 0 0;
+        padding: 5px;
+        text-align: center;
+    }
+    
+    .card-body-custom {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+    
+    .view-more-btn {
+        font-size: 20px;
+        padding: 5px 5px;
+    }
+</style>
+</head>
+<body>
+<div class="page-content p-5" id="content">
+    
+    <div class="sidebarCollapse" style="display: flex; justify-content: space-between;">
+       <div> <button id="sidebarCollapse" type="button" class="btn btn-light  rounded-pill shadow-sm px-4 "><i  class="fa fa-bars mr-2 toggleicon"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
+       </div>
+       <a href="" hidden id="django-message">{{message|default:0}}</a>
+        <!-- <DIV > <a href="{% url 'download_excel' %}" >
+            <button  type="submit" style="color: white;background-color: green;" >
+                <span class="btnText">Sample formate excel</span>
+                <i class="uil uil-navigator"></i>
+            </button> </a></DIV> -->
+    </div>
+   
+    <div class="title">
+        <h2 class="display-5" style="margin-bottom: .9rem;">Company Table</h2>
+        
+    </div>
+    <div class="row">
+        <div class="container table_container">
+            <div class="availability-input-field">
+                <h3>Department Counts for Placement Offer</h3>
+                <div id="department-countss" class="row">  <!-- Use row to control the layout -->
+                    {% for department, count in dept_counts.items %}
+                        <div class="card col-md-3 mb-3 shadow" style="border-radius: 10px;">
+                            <div class="card-top card-footer" style="border-radius: 10px 10px 0 0;">
+                                {{ department }} <!-- Displaying the department name -->
+                            </div>
+                            <div class="card-body" style="text-align: center;">
+                                <span style="font-size: 30px; font-weight: bold;">{{ count }}</span> <!-- Centered count -->
+                            </div>
+                            <div class="mb-1" style="text-align: center;">
+                                <button class="card-top card-footer view-more-btn mb-2">No. of Placed</button> <!-- Button now positioned below -->
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <header>Filter Form</header>
+            <form method="POST" autocomplete="off" enctype="multipart/form-data" id="filterForm">
+                {% csrf_token %}
+                <div class="form first">
+                    <div class="details personal">
+                        <div class="fields">
+                            {% comment %} {% if  dept ==  'All' or dept == 'Others' %} {% endcomment %}
+                            
+
+                            <div class="availability-input-field">
+                                <label>Company</label>
+                                <select id="company" name="company" class="form-control">
+                                    <option value="" hidden selected>Select Company</option>
+                                </select>
+                            </div>
+                        
+                            <div class="availability-input-field">
+                                <label>Placement Type</label>
+                                <select id="placement_type" name="placement_type" class="form-control">
+                                    <option value="" disabled selected>Select an Option</option>
+                                    <option value="Internship Offer">Internship Offer</option>
+                                    <option value="Internship + Placement Offer">Internship + Placement Offer</option>
+                                    <option value="Placement Offer">Placement Offer</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="details ID">
+                        <div id="department-counts" class="row">  <!-- Use row to control the layout -->
+                            {% for item in company_willingness %}
+                                {% for dept, count in item.dept_counts.items %}
+                                    <div class="col-3 col-md-3 col-lg-1">  <!-- 8 cards in a row on large screens -->
+                                        <div class="card custom-card">
+                                            <div class="card-footer card-footer-custom">
+                                                {{ dept }} <!-- Displaying the department name -->
+                                            </div>
+                                            <div class="card-body card-body-custom">
+                                                <span style="font-size: 18px; font-weight: bold;">{{ count }}</span> <!-- Centered count -->
+                                            </div>
+                                            <div class="mb-1" style="text-align: center;">
+                                                <button class="card-footer view-more-btn">No. of Placed</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    
+                    </div>
+                    
+                </div>
+            </form>
+
+
+            <main class="table" id="customers_table">
+                <section class="table__header">
+                    <div class="input-group">
+                        <input type="text" placeholder="Search Data...">
+                        <img src="{% static 'images/search.png' %}" alt="">
+                    </div>
+                    
+                    <div class="export__file" style="display: flex;">
+                        <P>Export   </P>
+                      <div class="">
+                          
+                        <label for="export-file" class="export__file-btn" title="Export File"> </label>
+                        <input type="checkbox" id="export-file">
+                        <div class="export__file-options" style="z-index: 2000;">
+                            <label>Export As &nbsp;&nbsp; &#10140;</label>
+                            <label for="export-file" class="btn btn-primary" style="color: black;" id="exportExcel">EXCEL <img src="{% static 'images/excel.png' %}" alt=""></label>
+                            <label for="export-file" class="btn btn-primary" style="color: black;" id="exportPdf">PDF <img src="{% static 'images/pdf.png' %}" alt=""></label>
+                        </div>
+                      </div>
+                    </div>
+                </section>
+                <section class="table__body">
+                    <table id="example" class="display nowrap" style="width:100%">
+<thead>
+                            <tr>
+                                <th>Batch</th>
+                                <th>Department</th>
+                                <th>Reg No</th>
+                                <th>Student Name</th>
+                                
+                                <th>cgpa</th>
+                                <th>sslc</th>
+                                <th>hsc</th>
+                                <th>diploma</th>
+                                <th>bag_of_log</th>
+                                <th>history_of_arrear</th>
+                                <th>Semester1</th>
+                                <th>Semester2</th>
+                                <th>Semester3</th>
+                                <th>Semester4</th>
+                                <th>Semester5</th>
+                                <th>Semester6</th>
+                                <th>Semester7</th>
+                                <th>Semester8</th>
+                                <th>Admission Type</th>
+                                <th>Contact Number</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for value in data %}
+                            <tr>
+                                <td>{{ value.batch }}</td>
+                                <td>{{ value.department }}</td>
+                                <td>{{ value.reg_no }}</td>
+                                <td>{{ value.student_name }}</td>
+                                <td>{{ value.cgpa }}</td>
+                                <td>{{ value.sslc }}</td>
+                                <td>{{ value.hsc }}</td>
+                                <td>{{ value.diploma }}</td>
+                                <td>{{ value.bag_of_log }}</td>
+                                <td>{{ value.history_of_arrear }}</td>
+                                <td>{{value.semester1}}</td>
+                                <td>{{value.semester2}}</td>
+                                <td>{{value.semester3}}</td>
+                                <td>{{value.semester4}}</td>
+                                <td>{{value.semester5}}</td>
+                                <td>{{value.semester6}}</td>
+                                <td>{{value.semester7}}</td>
+                                <td>{{value.semester8}}</td>
+                                <td>{{value.admission_type}}</td>
+                                <td>{{value.contact_number}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+{% comment %} <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var teacherRole = "{{ teacher_role }}";  // Get the teacher_role value from the server-side
+        var departmentSelect = document.getElementById('department');
+        var excel_upload= document.getElementById('file_up_down');
+
+        function updateDepartmentField() {
+            if (teacherRole === 'All') {
+                departmentSelect.disabled = false;
+                departmentSelect.value = '';  // Allow changing the department
+                excel_upload.style.display = 'none';
+            } else {
+                departmentSelect.disabled = true;
+                departmentSelect.value = teacherRole;  // Set to the teacher_role value and disable
+            }
+        }
+
+        updateDepartmentField();
+    });
+</script> {% endcomment %}
+<script>
+    // Function to generate random color in hexadecimal
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+  
+    // Function to apply random gradients to each card
+    function applyRandomGradients() {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            const randomColor1 = getRandomColor();
+            const randomColor2 = getRandomColor();
+            const cardTop = card.querySelector('.card-top');
+            const viewMoreBtn = card.querySelector('.view-more-btn');
+            const gradient = `linear-gradient(to right, ${randomColor1}, ${randomColor2})`;
+            cardTop.style.background = gradient;
+            viewMoreBtn.style.background = gradient;
+        });
+    }
+  
+    // Apply gradients on page load
+    applyRandomGradients();
+  </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var departmentSelect = document.getElementById('department');
+        var companySelect = document.getElementById('company');
+        var placementTypeSelect = document.getElementById('placement_type');
+        var outputDiv = document.getElementById('department-counts');  // Assuming you have a div for displaying counts
+
+        // Function to update the department count
+        function updateDepartmentCount() {
+            var selectedCompanyId = companySelect.value;  // Get selected company ID
+            var selectedPlacementType = placementTypeSelect.value;  // Get selected placement type
+
+            if (selectedCompanyId !== "" && selectedPlacementType !== "") {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', "{% url 'filter_company_count' %}?company_id=" + encodeURIComponent(selectedCompanyId) + "&placement_type=" + encodeURIComponent(selectedPlacementType), true);
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            console.log("Response received:", response); // Log the response
+                            displayCounts(response.company_willingness);
+                        } catch (error) {
+                            console.error('Error parsing JSON:', error);
+                        }
+                    } else {
+                        console.error('Error fetching data: ' + xhr.status);
+                    }
+                };
+
+                xhr.onerror = function() {
+                    console.error('An error occurred during the AJAX request');
+                };
+
+                xhr.send();
+            } else {
+                // Clear previous counts if no company or placement type is selected
+                outputDiv.innerHTML = '';
+            }
+        }
+
+        // Function to display department counts in card format
+        function displayCounts(companyWillingness) {
+            outputDiv.innerHTML = '';  // Clear previous counts
+
+            companyWillingness.forEach(function(item) {
+                var companyName = item.company;
+                var deptCounts = item.dept_counts;
+
+                // Create a card for each department count
+                for (var dept in deptCounts) {
+                    // Create a new card element
+                    var card = document.createElement('div');
+                    card.className = 'card custom-card';
+                    card.style.borderRadius = '20px';
+                    card.style.padding = '0px';
+
+                    // Create the card footer
+                    var cardFooter = document.createElement('div');
+                    cardFooter.className = 'card-top card-footer card-top';
+                    cardFooter.style.borderRadius = '10px 10px 0 0';
+                    cardFooter.innerHTML = dept; // department name
+
+                    // Create the card body
+                    var cardBody = document.createElement('div');
+                    cardBody.className = 'card-body';
+
+                    // Center the count
+                    var countSpan = document.createElement('span');
+                    countSpan.style.fontSize = '24px';
+                    countSpan.style.fontWeight = 'bold';
+                    countSpan.innerText = deptCounts[dept] > 0 ? deptCounts[dept] : '0'; // count
+
+                    // Add the count to the card body
+                    cardBody.appendChild(countSpan);
+                    
+                    // Create View More button
+                    var buttonDiv = document.createElement('div');
+                    buttonDiv.className = 'mb-3';
+                    buttonDiv.innerHTML = '<center><button class="card-top card-footer view-more-btn mx-4">No. of Placed</button></center>';
+
+                    // Add the button to the card body
+                    cardBody.appendChild(buttonDiv);
+
+                    // Append footer and body to the card
+                    card.appendChild(cardFooter);
+                    card.appendChild(cardBody);
+
+                    // Add the card to the output div
+                    outputDiv.appendChild(card);
+                }
+            });
+        }
+
+        // Event listeners for changes in company and placement type
+        companySelect.addEventListener('change', updateDepartmentCount);
+        placementTypeSelect.addEventListener('change', updateDepartmentCount);
+    });
+</script>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Fetch the list of companies on page load
+        fetchCompanies();
+    
+        function fetchCompanies() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', "{% url 'get_companies' %}", true); // Replace with your URL
+    
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    console.log("List of Companies:", response.companies);
+                    // Populate the select dropdown with companies
+                    populateCompanySelect(response.companies);
+                } else {
+                    console.error('Error fetching companies: ' + xhr.status);
+                }
+            };
+    
+            xhr.onerror = function() {
+                console.error('An error occurred during the AJAX request');
+            };
+    
+            xhr.send();
+        }
+    
+        function populateCompanySelect(companies) {
+            var companySelect = document.getElementById('company'); // Select the dropdown element
+            companySelect.innerHTML = ''; // Clear any existing options
+            console.log("Hello")
+            // Create a default option
+            var defaultOption = document.createElement('option');
+            defaultOption.value = "";
+            defaultOption.hidden = true;
+            defaultOption.selected = true;
+            defaultOption.textContent = "Select Company";
+            companySelect.appendChild(defaultOption);
+            
+            console.log("Hlo")
+            // Populate the select dropdown with options for each company
+            companies.forEach(function(company) {
+                var option = document.createElement('option');
+                option.value = company.company_id; // Assuming each company object has an 'id' field
+                option.textContent = company.company_name; // Assuming each company object has a 'name' field
+                companySelect.appendChild(option);
+            });
+            console.log("Hlooo")
+        }
+    });
+    
+</script>
+
+
+
+
+<script>
+    
+    
+    function checkFields() {
+        var form = document.getElementById('filterForm');
+        var filterButton = document.getElementById('filterButton');
+        var fields = form.querySelectorAll('input, select');
+        var isAnyFieldFilled = Array.from(fields).some(field => field.value.trim() !== '');
+    
+        filterButton.disabled = !isAnyFieldFilled;
+    }
+    
+    // Add event listeners to all input and select elements to check the fields on change
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var form = document.getElementById('filterForm');
+        var fields = form.querySelectorAll('input, select');
+    
+        fields.forEach(field => {
+            field.addEventListener('input', checkFields);
+            field.addEventListener('change', checkFields);
+        });
+    });
+    </script>
+<!-- Include necessary JavaScript libraries -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+<script src="{% static 'JS/multiselect-dropdown.js' %}"></script>
+<!-- <script src="{% static 'JS/multiselect-dropdown.js' %}"></script> -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the message from the DOM
+        const message = document.getElementById('django-message');
+        if (message.textContent != 0 ) {
+            // Show the alert box with the message
+            alert(message.textContent);
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('.input-group input');
+    const tableBody = document.querySelector('.table__body tbody');
+
+    searchInput.addEventListener('input', function() {
+        const searchValue = searchInput.value.toLowerCase();
+        const rows = tableBody.querySelectorAll('tr');
+
+        rows.forEach(row => {
+            const rowText = row.textContent.toLowerCase();
+            if (rowText.includes(searchValue) || searchValue === '') {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+
+</script>
+
+
+<script>
+    // Function to collect filter values and display in PDF
+    function collectFilterValues() {
+        const cgpa = document.getElementById('cgpa').value;
+        const no_of_arrear = document.getElementById('no_of_arrear').value;
+        const bag_of_log = document.getElementById('bag_of_log').value;
+        const batch = document.getElementById('batch').value;
+
+        return `CGPA >= ${cgpa}, No of Arrear <= : ${no_of_arrear}, Bag Of Log: ${bag_of_log}, Batch: ${batch}`;
+    }
+
+    // Export table to Excel
+    document.getElementById('exportExcel').addEventListener('click', function() {
+        var wb = XLSX.utils.table_to_book(document.getElementById('example'), { sheet: "Sheet JS" });
+        XLSX.writeFile(wb, 'TableData.xlsx');
+    });
+
+    // Export table to PDF
+    document.getElementById('exportPdf').addEventListener('click', function() {
+        var { jsPDF } = window.jspdf;
+        var doc = new jsPDF('p', 'pt', 'a4');
+
+        // Collect filter values and add to PDF with increased font size
+        var filterValues = collectFilterValues();
+        doc.setFontSize(12); // Set font size to 12
+        doc.text(filterValues, 20, 20);
+
+        // Add table to PDF
+        doc.autoTable({ html: '#example', startY: 40 });
+        doc.save('TableData.pdf');
+    });
+</script>
+
+
+{% endblock %}
+
+<!-- End demo content -->
+
+
+
+</body>
+</html>

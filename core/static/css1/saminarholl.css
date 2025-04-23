@@ -1,0 +1,165 @@
+.cards {
+    margin: 0 auto;
+    margin-top: 5%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    grid-auto-rows: auto;
+    gap: 20px;
+    /* font-family: sans-serif; */
+    padding-top: 30px;
+    text-decoration: none; 
+}
+a {
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit color from parent */
+}
+.cards * {
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+.cards#blur.active{
+    filter: blur(20px);
+    pointer-events: none;
+    user-select: none;
+}
+
+.card{
+        box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.5);
+        transition: transform 0.3s ease;
+        
+}
+.card:hover {
+    transform: translateY(-10px);
+}
+.card__image {
+    width: 100%;
+    height: 185px;
+    object-fit: cover;
+    display: block;
+}
+
+.card__content {
+    /* line-height: 1.5; */
+    display: flex;
+    justify-content: center;
+    font-size: 0.9em;
+    padding: 5px 10px; 
+    background: #fafafa;
+    margin-top: 0px;
+  margin-bottom: 0px;
+
+} 
+.card__content>h1{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.card__content > p:first-of-type {
+    margin-top: 0;
+}
+
+.card__content > p:last-of-type {
+    margin-bottom: 0;
+}
+
+#popup{
+    position: fixed;
+top: 40%; 
+left: 50%; 
+transform: translate(-50%,-50%); 
+width: 600px; 
+padding: 30px; 
+box-shadow: 0 5px 30px rgba(0,0,0,.3);
+background: #ffff;
+visibility: hidden;
+opacity: 0.5;
+transition: 0.5s;
+}
+#popup.active{
+    top: 50%; 
+    visibility: visible;
+opacity: 1;
+transition: 0.5s;
+}
+#popup .cross_icon {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+.close-icon {
+    position: absolute;
+  right: 30px;
+  cursor: pointer;
+  top: 20px;
+  }
+.popup__image {
+    display: block;
+    margin: 0 auto; /* This will center the image horizontally */
+    max-width: 80%;
+    height: 200px; /* Ensure the image doesn't exceed the width of its container */
+}
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  .center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+  
+  .radio-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .radio-list li {
+    margin-bottom: 10px;
+  }
+  
+  .radio-list label {
+    cursor: pointer;
+    padding-left: 20px; /* Add padding to align with the custom radio button */
+    position: relative;
+  }
+  
+  .radio-list input[type="radio"] {
+    appearance: none; /* Remove default appearance */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #333; /* Custom border */
+    border-radius: 50%; /* Round shape */
+    outline: none;
+    margin-right: 10px;
+  }
+  
+  /* Style when the radio button is checked */
+  .radio-list input[type="radio"]:checked {
+    background-color: #333; /* Change background color */
+  }
+  
+  /* Style when the radio button is hovered */
+  .radio-list input[type="radio"]:hover {
+    border-color: #666; /* Change border color */
+  }
+  
+  /* Style list item when hovered */
+  .radio-list li:hover label {
+    color: blue; /* Change text color */
+  }
+  
+  /* Style list item when clicked */
+  .radio-list li input[type="radio"]:checked + label {
+    color: green; /* Change text color */
+  }
+  

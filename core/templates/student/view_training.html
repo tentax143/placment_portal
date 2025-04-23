@@ -1,0 +1,721 @@
+{% extends "base.html" %}
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>RIT PLACEMENT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<style>
+/* Modern UI card styling */
+.card {
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    height: 100%; /* Use full height for the card */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer; /* Change cursor to indicate clickable */
+    margin:10px;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure image fits card area */
+.card-img-top {
+    width: 100%;
+    height: 200px; /* Fixed height for uniformity */
+    object-fit: cover; /* Ensure the image covers the area */
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+/* Card body styling */
+.card-body {
+    padding: 20px;
+    text-align: center;
+    background-color: #fff;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Title and text styling */
+.card-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* Footer styling */
+.card-footer {
+    padding: 15px;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+/* Button styling */
+.view-more-btn {
+    background-color: #007bff; /* Primary color */
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 80%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.view-more-btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+    transform: scale(1.05); /* Grow slightly on hover */
+}
+
+/* Gradient background for the card top */
+#card-top {
+    width: 100%;
+    height: 50%; /* Adjust height as necessary */
+    background: linear-gradient(90deg, #6a11cb, #2575fc); /* Gradient effect */
+}
+
+/* Container styling */
+.container {
+    padding: 30px;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Flexbox for responsiveness */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.column {
+    flex: 1 1 20%;
+    min-width: 250px;
+    max-width: 300px;
+    padding: 10px;
+}
+
+.willingness-div {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: center; /* Center items horizontally */
+}
+
+.willing-button {
+    width: 70%; /* Adjust width as needed */
+    padding: 10px; /* Add padding for a better look */
+    background-color: green; /* Change color as needed */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Change cursor on hover */
+    margin-bottom: 10px; /* Space between buttons */
+}
+
+.not-willing-button {
+    width: 50%; /* Adjust width as needed */
+    padding: 10px; /* Add padding for a better look */
+    background-color: red; /* Change color as needed */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+    .column {
+        flex: 1 1 45%;
+    }
+}
+
+@media (max-width: 576px) {
+    .column {
+        flex: 1 1 100%;
+    }
+}
+
+
+
+  </style>
+<body>
+ 
+{% block maincontent %}
+<div class="blur-background">
+<!-- Page content holder -->
+<div class="page-content p-5" id="content">
+    <div class="row">
+        <div class="container" style="height: 85vh; overflow: auto;">
+            <h2 id="companyName" style="color: green; ">View Training</h2>
+
+            <div class="row">
+              {% for item in trainers  %}
+              <div class="card col-md-3 mr-4 mb-3 shadow" style="border-radius: 20px; padding : 0px; ">
+                    
+                    
+                <div class="card-footer card-top" style="border-radius: 10px 10px 0 0;">
+                      <div class="card-top"></div>
+                  </div>
+                  <div class="">
+                    <img class="card-img-top" 
+     src="{% if item.trainer_gender == 'Male' %}
+              {% static 'defaults/default_male.jpg' %}
+           {% elif item.trainer_gender == 'Female' %}
+              {% static 'defaults/default_female.jpg' %}
+           {% else %}
+              {% static 'defaults/default.jpg' %}
+           {% endif %}" 
+     alt="{{ trainer.company.company_name }}" 
+     style="padding:10px; width: 100%; height: 75px; object-fit: contain;" />
+                  </div>
+                  <div class="card-body">
+                      <h5 class="card-title">{{ item.trainer_name }}</h5>
+                      <p class="card-text"><strong>Company Name :</strong> {{ item.company.company_name }}</p>
+                      <p class="card-text"><strong>Topics :</strong> {{ item.topics  }}</p>
+        
+                  </div>
+                  <div class="mb-3">
+                      <center>
+                          <button onclick="showTrainerDetails('{{ item.trainer_id }}')" class="card-footer view-more-btn mx-4">View More</button>
+                      </center>
+                  </div>
+              </div>
+          {% endfor %}
+          
+          
+          
+          
+          
+          
+          
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+    <br>
+<!-- Modal Structure -->
+<div id="companyModal" class="modal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7);">
+    <div class="modal-content" style="background-color: white; margin: auto; padding: 20px; border-radius: 10px; width: 65%; max-width: 800px; max-height: 80vh; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; top: 50%; transform: translateY(-50%);">
+        <!-- Close Button -->
+        <span onclick="closeModal()" style="position: absolute; top: 10px; right: 20px; font-size: 30px; cursor: pointer; z-index: 1;">&times;</span>
+
+        <!-- Company Details Section -->
+        <div class="row" style="overflow: auto; height: calc(80vh - 50px);">
+            <style>
+                /* For WebKit browsers (Chrome, Safari) */
+                .row::-webkit-scrollbar {
+                    width: 10px; /* Width of the scrollbar */
+                }
+
+                .row::-webkit-scrollbar-track {
+                    background: #f1f1f1; /* Background of the scrollbar track */
+                    border-radius: 10px; /* Round the edges of the track */
+                }
+
+                .row::-webkit-scrollbar-thumb {
+                    background: #888; /* Color of the scrollbar thumb */
+                    border-radius: 10px; /* Round the edges of the thumb */
+                }
+
+                .row::-webkit-scrollbar-thumb:hover {
+                    background: #555; /* Color of the scrollbar thumb on hover */
+                }
+
+                /* Hide the scrollbar arrows (if any) */
+                .row::-webkit-scrollbar-button {
+                    display: none; /* Hides the top and bottom buttons */
+                }
+            </style>
+
+            <div class="container">
+                <div class="right-panel" id="rightPanel">
+                    <h2 style="color: green; display: inline-block;">Company Details</h2>
+                    <div id="countdown" style="display: inline-block; background-color: #ff000c; border-radius: 20px; padding: 5px 15px; margin-left: 10px; font-weight: bold; color: white;">
+                        <span id="currentTime">Loading Time...</span>
+                    </div>
+                    <div id="companyDescription" class="content-div" style="margin-top: 10px;"></div>
+                    <div id="feedback" class="willingness-div" style="margin-top: 10px; display: none; position: sticky; bottom: 10px; background: white; padding: 10px; border: 1px solid #ccc; border-radius: 10px; text-align: center;">
+                    
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feedback Modal Structure -->
+<div id="feedbackModal" class="modal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7);">
+    <div class="modal-content" style="background-color: white; margin: auto; padding: 20px; border-radius: 10px; width: 65%; max-width: 800px; max-height: 80vh; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; top: 50%; transform: translateY(-50%);">
+        <!-- Close Button -->
+        <span onclick="closeFeedbackModal()" style="position: absolute; top: 10px; right: 20px; font-size: 30px; cursor: pointer; z-index: 1;">&times;</span>
+
+        <!-- Feedback Form Section -->
+        <h2 style="color: green;">Feedback Form</h2>
+
+        <div class="row" style="overflow: auto; height: calc(80vh - 50px);">
+            <style>
+                /* For WebKit browsers (Chrome, Safari) */
+                .row::-webkit-scrollbar {
+                    width: 10px; /* Width of the scrollbar */
+                }
+
+                .row::-webkit-scrollbar-track {
+                    background: #f1f1f1; /* Background of the scrollbar track */
+                    border-radius: 10px; /* Round the edges of the track */
+                }
+
+                .row::-webkit-scrollbar-thumb {
+                    background: #888; /* Color of the scrollbar thumb */
+                    border-radius: 10px; /* Round the edges of the thumb */
+                }
+
+                .row::-webkit-scrollbar-thumb:hover {
+                    background: #555; /* Color of the scrollbar thumb on hover */
+                }
+
+                /* Star Rating */
+                .star-rating {
+                    display: flex; /* Align stars in a row */
+                    justify-content: flex-start; /* Align items to the start */
+                    margin-bottom: 10px; /* Spacing below star ratings */
+                }
+                
+                .star-rating label {
+                    cursor: pointer;
+                    font-size: 36px; /* Increased size of stars */
+                    color: #d3d3d3; /* Grey color for unselected stars */
+                    transition: color 0.2s; /* Smooth color transition */
+                }
+                
+                .star-rating input {
+                    display: none; /* Hide radio buttons */
+                }
+                
+                /* Change checked stars to gold */
+                .star-rating input:checked + label,
+                .star-rating input:checked + label ~ label {
+                    color: gold; /* Gold color for selected stars */
+                }
+                
+                /* On hover, highlight from left to right */
+                .star-rating label:hover,
+                .star-rating label:hover ~ label {
+                    color: gold; /* Gold color for hovered and previous stars */
+                }
+                
+                /* Keep the unhovered stars grey */
+                .star-rating label:hover ~ label {
+                    color: #d3d3d3; /* Grey color for unselected stars */
+                }
+                .feedback-question {
+                    margin: 15px 0;
+                }
+
+                button {
+                    margin-top: 20px;
+                    padding: 10px 20px; /* Increased padding */
+                    background-color: green;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+                    font-size: 16px; /* Increased font size */
+                }
+
+                button:hover {
+                    background-color: darkgreen;
+                }
+
+                input[type="text"], textarea {
+                    width: 100%; /* Full width */
+                    padding: 10px; /* Padding for input and textarea */
+                    border: 1px solid #ccc; /* Border color */
+                    border-radius: 5px; /* Rounded corners */
+                    margin-bottom: 15px; /* Space below inputs */
+                }
+            </style>
+
+            <form id="feedbackForm">
+                <!-- Hidden Input for Trainer ID -->
+                <input type="hidden" name="trainer" id="trainerId" value=""> <!-- Ensure name matches the model -->
+            
+                <!-- Feedback Questions -->
+                <div class="feedback-question">
+                    <label>a. How do you feel about the programme / course content?</label><br>
+                    <div class="star-rating">
+                        <input type="radio" id="content-5" name="course_content" value="4" required><label for="content-5">★</label> <!-- Change name to course_content -->
+                        <input type="radio" id="content-4" name="course_content" value="3"><label for="content-4">★</label>
+                        <input type="radio" id="content-3" name="course_content" value="2"><label for="content-3">★</label>
+                        <input type="radio" id="content-2" name="course_content" value="1"><label for="content-2">★</label>
+                        <input type="radio" id="content-1" name="course_content" value="0"><label for="content-1">★</label>
+                    </div>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>b. How do you rate the lecture sessions / presentations?</label><br>
+                    <div class="star-rating">
+                        <input type="radio" id="lecture-5" name="lecture_sessions" value="4" required><label for="lecture-5">★</label> <!-- Change name to lecture_sessions -->
+                        <input type="radio" id="lecture-4" name="lecture_sessions" value="3"><label for="lecture-4">★</label>
+                        <input type="radio" id="lecture-3" name="lecture_sessions" value="2"><label for="lecture-3">★</label>
+                        <input type="radio" id="lecture-2" name="lecture_sessions" value="1"><label for="lecture-2">★</label>
+                        <input type="radio" id="lecture-1" name="lecture_sessions" value="0"><label for="lecture-1">★</label>
+                    </div>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>c. How do you rate the practical sessions?</label><br>
+                    <div class="star-rating">
+                        <input type="radio" id="practical-5" name="practical_sessions" value="4" required><label for="practical-5">★</label> <!-- Change name to practical_sessions -->
+                        <input type="radio" id="practical-4" name="practical_sessions" value="3"><label for="practical-4">★</label>
+                        <input type="radio" id="practical-3" name="practical_sessions" value="2"><label for="practical-3">★</label>
+                        <input type="radio" id="practical-2" name="practical_sessions" value="1"><label for="practical-2">★</label>
+                        <input type="radio" id="practical-1" name="practical_sessions" value="0"><label for="practical-1">★</label>
+                    </div>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>d. How do you rate the interactive sessions?</label><br>
+                    <div class="star-rating">
+                        <input type="radio" id="interactive-5" name="interactive_sessions" value="4" required><label for="interactive-5">★</label> <!-- Change name to interactive_sessions -->
+                        <input type="radio" id="interactive-4" name="interactive_sessions" value="3"><label for="interactive-4">★</label>
+                        <input type="radio" id="interactive-3" name="interactive_sessions" value="2"><label for="interactive-3">★</label>
+                        <input type="radio" id="interactive-2" name="interactive_sessions" value="1"><label for="interactive-2">★</label>
+                        <input type="radio" id="interactive-1" name="interactive_sessions" value="0"><label for="interactive-1">★</label>
+                    </div>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>e. How do you rate the quality of course material given to you?</label><br>
+                    <div class="star-rating">
+                        <input type="radio" id="material-5" name="course_material" value="4" required><label for="material-5">★</label> <!-- Change name to course_material -->
+                        <input type="radio" id="material-4" name="course_material" value="3"><label for="material-4">★</label>
+                        <input type="radio" id="material-3" name="course_material" value="2"><label for="material-3">★</label>
+                        <input type="radio" id="material-2" name="course_material" value="1"><label for="material-2">★</label>
+                        <input type="radio" id="material-1" name="course_material" value="0"><label for="material-1">★</label>
+                    </div>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>f. How do you rate the usefulness of the programme in improving your skills?</label><br>
+                    <div class="star-rating">
+                        <input type="radio" id="usefulness-5" name="usefulness" value="4" required><label for="usefulness-5">★</label> <!-- Change name to usefulness -->
+                        <input type="radio" id="usefulness-4" name="usefulness" value="3"><label for="usefulness-4">★</label>
+                        <input type="radio" id="usefulness-3" name="usefulness" value="2"><label for="usefulness-3">★</label>
+                        <input type="radio" id="usefulness-2" name="usefulness" value="1"><label for="usefulness-2">★</label>
+                        <input type="radio" id="usefulness-1" name="usefulness" value="0"><label for="usefulness-1">★</label>
+                    </div>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>g. To what extent have you improved your knowledge/skills after attending the programme?</label><br>
+                    <select name="knowledge_improvement" required> <!-- Change name to knowledge_improvement -->
+                        <option value="85-95%">85-95%</option>
+                        <option value="75-85%">75-85%</option>
+                        <option value="50-75%">50-75%</option>
+                        <option value="25-50%">25-50%</option>
+                    </select>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>h. How do you rate the timely communication in all aspects of the programme?</label><br>
+                    <div class="star-rating">
+                        <input type="radio" id="communication-5" name="timely_communication" value="4" required><label for="communication-5">★</label> <!-- Change name to timely_communication -->
+                        <input type="radio" id="communication-4" name="timely_communication" value="3"><label for="communication-4">★</label>
+                        <input type="radio" id="communication-3" name="timely_communication" value="2"><label for="communication-3">★</label>
+                        <input type="radio" id="communication-2" name="timely_communication" value="1"><label for="communication-2">★</label>
+                        <input type="radio" id="communication-1" name="timely_communication" value="0"><label for="communication-1">★</label>
+                    </div>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>i. How do you rate the overall arrangement and conduct of the programme/course?</label><br>
+                    <div class="star-rating">
+                        <input type="radio" id="arrangement-5" name="overall_arrangement" value="4" required><label for="arrangement-5">★</label> <!-- Change name to overall_arrangement -->
+                        <input type="radio" id="arrangement-4" name="overall_arrangement" value="3"><label for="arrangement-4">★</label>
+                        <input type="radio" id="arrangement-3" name="overall_arrangement" value="2"><label for="arrangement-3">★</label>
+                        <input type="radio" id="arrangement-2" name="overall_arrangement" value="1"><label for="arrangement-2">★</label>
+                        <input type="radio" id="arrangement-1" name="overall_arrangement" value="0"><label for="arrangement-1">★</label>
+                    </div>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>j. Were the contents discussed relevant to the topics planned?</label><br>
+                    <select name="content_relevance" required> <!-- Change name to content_relevance -->
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>k. Would you like to have another programme by the same Resource person?</label><br>
+                    <select name="resource_person" required> <!-- Change name to resource_person -->
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            
+                <div class="feedback-question">
+                    <label>l. Name the specific topic or session, which you liked most:</label><br>
+                    <input type="text" name="liked_topic" placeholder="Your topic here..."> <!-- Change name to liked_topic -->
+                </div>
+            
+                <div class="feedback-question">
+                    <label>m. Any specific feedback:</label><br>
+                    <textarea rows="4" name="specific_feedback" placeholder="Your feedback here..."></textarea> <!-- Change name to specific_feedback -->
+                </div>
+            
+                <!-- Submit Button -->
+                <button type="button" onclick="submit_to_db()">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+</div>
+        
+        
+    </div>
+<script>
+  // Function to parse date from DD-MM-YYYY format and set time to 11:59:59 PM
+ // Function to parse date from DD-MM-YYYY format and set time to 11:59:59 PM
+ function parseLastDate(dateString) {
+     // Split the date string
+     var parts = dateString.split('-');
+     if (parts.length === 3) {
+         // Convert to JavaScript Date (months are 0-based, hence subtract 1)
+         var lastDate = new Date(parts[0], parts[1] - 1, parts[2]);
+         // Set time to 11:59:59 PM
+         lastDate.setHours(23, 59, 59, 999);
+         return lastDate;
+     }
+     return null;
+ }
+ 
+ // Function to calculate countdown
+ function calculateCountdown(lastDateString) {
+     var lastDateObj = parseLastDate(lastDateString);
+ 
+     // Check if the date is valid
+     if (!lastDateObj || isNaN(lastDateObj.getTime())) {
+         console.error('Invalid date:', lastDateString);
+         return 'Invalid date';
+     }
+ 
+     var now = new Date();
+     var timeDifference = lastDateObj - now; // Difference in milliseconds
+ 
+     if (timeDifference <= 0) {
+         return 'The deadline has passed.';
+     }
+ 
+     var days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+     var hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+     var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+     var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+ 
+     return `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+ }
+ 
+</script>
+<script>
+function closeModal() {
+        var modal = document.getElementById('companyModal');
+        modal.style.display = 'none';
+        var background = document.querySelector('.blur-background');
+        background.style.filter = 'none';
+        clearInterval(countdownInterval);
+    }
+ function showTrainerDetails(companyId) {
+    
+    var modal = document.getElementById('companyModal');
+    modal.style.display = 'block';
+    var background = document.querySelector('.blur-background');
+    background.style.filter = 'blur(5px)';
+
+ 
+     selectedCompanyId = companyId;
+     var companyDescription = document.getElementById('companyDescription');
+     var countdownDiv = document.getElementById('countdown');
+
+ 
+     // Fetch company details using AJAX
+     fetch(`/student/training_company/${companyId}/`)
+         .then(response => response.json())
+         .then(data => {
+             if (data.error) {
+                 companyDescription.innerHTML = '<p>Company not found</p>';
+                 console.log(data.error);
+             } else {
+
+                console.log("He came ");
+                const trainerId = data.trainer_id; // Ensure this is available in your response
+                console.log(trainerId)
+                // Update the feedback div with the trainerId
+                document.getElementById('feedback').innerHTML = `
+                    <button onclick="submitFeedback(${trainerId})" 
+                            style="width: 70%; padding: 10px; background-color: green; color: white; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">
+                        Add Feedback
+                    </button>
+                `;
+                document.getElementById('feedback').style.display = 'flex';
+                 companyDescription.innerHTML = `
+    
+                     <div style="width: 100%; max-width: 600px; margin: 0 auto;">
+     <table style="width: 100%; border-collapse: collapse;">
+         <tr>
+             <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Company Name:</td>
+             <td style="padding: 8px; border: 1px solid #ccc;">${data.company_name}</td>
+         </tr>
+         <tr>
+             <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Address:</td>
+             <td style="padding: 8px; border: 1px solid #ccc;">${data.company_address}</td>
+         </tr>
+         <tr>
+             <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Place:</td>
+             <td style="padding: 8px; border: 1px solid #ccc;">${data.company_place}</td>
+         </tr>
+         <tr>
+             <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Company Email :</td>
+             <td style="padding: 8px; border: 1px solid #ccc;">${data.company_email}</td>
+         </tr>
+         <tr>
+             <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Topics Covered:</td>
+             <td style="padding: 8px; border: 1px solid #ccc;">${data.topics}</td>
+         </tr>
+         <tr>
+             <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Eligibile Department:</td>
+             <td style="padding: 8px; border: 1px solid #ccc;">${data.departments}</td>
+         </tr>
+         <tr>
+             <td style="padding: 8px; font-weight: bold; border: 1px solid #ccc;">Description:</td>
+             <td style="padding: 8px; border: 1px solid #ccc;">${data.description}</td>
+         </tr>
+     </table>
+ </div>
+ 
+                 `;
+ 
+
+                
+ 
+ 
+ 
+                 var countdownElement = document.getElementById('countdown');
+                 // Calculate and display countdown
+                 var lastDate = data.company_last_date;
+                  // Ensure this is in the format DD-MM-YYYY
+                 countdownElement.innerText = calculateCountdown(lastDate);
+
+
+
+                     
+                  // Check if countdownElement contains 'The deadline has passed.'
+  
+            // Update countdown every second
+            countdownInterval  = setInterval(function() {
+                     countdownElement.innerText = calculateCountdown(lastDate);
+            }, 1000);
+                 
+             }
+         });
+ }
+ 
+    
+    </script>
+    <script>
+        // Function to generate random color in hexadecimal
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+      
+        // Function to apply random gradients to each card
+        function applyRandomGradients() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const randomColor1 = getRandomColor();
+                const randomColor2 = getRandomColor();
+                const cardTop = card.querySelector('.card-top');
+                const viewMoreBtn = card.querySelector('.view-more-btn');
+                const gradient = `linear-gradient(to right, ${randomColor1}, ${randomColor2})`;
+                cardTop.style.background = gradient;
+                viewMoreBtn.style.background = gradient;
+            });
+        }
+      
+        // Apply gradients on page load
+        applyRandomGradients();
+      </script>
+    <script>
+        function submitFeedback(trainerId) {
+            // Set the trainerId in the hidden input field
+            document.getElementById('trainerId').value = trainerId;
+            document.getElementById('feedbackModal').style.display = 'block';
+        }
+        
+        // Close feedback modal function
+        function closeFeedbackModal() {
+            var feedbackModal = document.getElementById('feedbackModal');
+            feedbackModal.style.display = 'none';
+        }
+        
+        // Function to submit the feedback form
+
+// Function to submit feedback
+function submit_to_db() {
+    const formData = new FormData(document.getElementById('feedbackForm')); // Collect form data
+    fetch('/feedback/submit/', { // Update the URL here
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}' // Add CSRF token if necessary
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle success
+        alert(data.message); // Use the message from the server
+        closeFeedbackModal(); // Close the modal
+    })
+    .catch(error => {
+        // Handle error
+        console.error('Error submitting feedback:', error);
+        alert('Failed to submit feedback. Please try again later.');
+    });
+}
+
+</script>
+{% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+</html>

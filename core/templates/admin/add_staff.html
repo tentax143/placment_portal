@@ -1,0 +1,143 @@
+
+{% extends "base.html" %}
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>RIT PLACEMENT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+   
+</head>
+<body>
+ 
+<!-- End vertical navbar -->
+{% block maincontent %}
+<div class="rit"></div>
+
+<!-- Page content holder -->
+<div class="page-content p-5 " id="content">
+  <!-- Toggle button -->
+  <div class="sidebarCollapse">
+    <button id="sidebarCollapse" type="button" class="btn btn-light  rounded-pill shadow-sm px-4 "><i  class="fa fa-bars mr-2 toggleicon"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
+    <a href="" hidden id="django-message">{{message|default:0}}</a>
+</div>
+<br><br>
+
+  <div class="row ">
+    <h5>Add Staff</h5>
+  <div class="container" style="max-width: 1540px; height:75vh; ">
+    <form id="add-company-form" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="modal-form-grid">
+          <div class="modal-form-item">
+              <label for="company-name"> ID / REG NO:</label>
+              <input type="text" id="company-name" name="faculty_id" required>
+          </div>
+          <div class="modal-form-item">
+              <label for="company-role"> Name:</label>
+              <input type="text" id="company-role" name="faculty_name" required>
+          </div>
+          <div class="modal-form-item">
+              <label for="company-skill"> Email:</label>
+              <input type="text" id="company-skill" name="faculty_email" required>
+          </div>
+       
+          <div class="modal-form-item" style="position: relative;">
+            <label for="faculty-role-select"> Role :</label>
+            <select required id="faculty-role-select" name="faculty_role"
+                onchange="console.log(this.selectedOptions)" style="position: relative; z-index: 10; width: 100%;" >
+                <option value="" disabled selected hidden>Choose Role</option>
+                <option value="Placement Cell Staff">PLACEMENT CELL FACULTY</option>
+                            <option value="Placement Coordinator">PLACEMENT CO-ORDINATOR</option>
+                            <option value="JA">JA</option>
+                            <option value="HOD">HOD</option>
+                            <option value="ALL">Principal</option>
+                            <option value="ALL">Vice Principal</option>
+                            <option value="ALL">GM</option>
+                             <option value=" Student Placement Coordinator">STUDENT PLACEMENT CO-ORDINATOR</option>
+                
+            </select>
+        </div>
+          <div class="modal-form-item" style="position: relative;">
+              <label for="faculty-dept-select"> Department :</label>
+              <select required id="faculty-dept-select" name="faculty_dept"
+                  onchange="console.log(this.selectedOptions)" style="position: relative; z-index: 10; width: 100%;"  {% if dept != 'ALL' and dept != 'Others' %}{% endif %}>
+                  <option value="" disabled selected hidden>Choose Department</option>
+                  <option value="" hidden selected>Select Department</option>
+                  <option value="All" {% if dept == 'All' %}selected{% endif %}>All Department</option>
+                  <option value="Others" {% if dept == 'All' %}selected{% endif %}>Others</option>
+                  <option value="B.TECH AD"  {% if dept == 'B.TECH AD' %}selected{% endif %}>AD-ARTIFICIAL INTELLIGENCE AND DATA SCIENCE</option>
+                  <option value="B.E CIVIL"  {% if dept == 'B.E CIVIL' %}selected{% endif %}>CE-CIVIL ENGINEERING</option>
+                  <option value="B.TECH CSBS" {% if dept == 'B.TECH CSBS' %}selected{% endif %}>CB-COMPUTER SCIENCE AND BUSINESS SYSTEM</option>
+                  <option value="B.E CSE" {% if dept == 'B.E CSE' %}selected{% endif %}>CS-COMPUTER SCIENCE AND ENGINEERING</option>
+                  <option value="B.E EEE" {% if dept == 'B.E EEE' %}selected{% endif %}>EE-ELECTRICAL AND ELECTRONICS ENGINEERING</option>
+                  <option value="B.E ECE" {% if dept == 'B.E ECE' %}selected{% endif %}>EC-ELECTRONICS AND COMMUNICATION ENGINEERING</option>
+                  <option value="B.TECH IT" {% if dept == 'B.TECH IT' %}selected{% endif %}>IT-INFORMATION TECHNOLOGY</option>
+                  <option value="B.E MECH" {% if dept == 'B.E MECH' %}selected{% endif %}>ME-MECHANICAL ENGINEERING</option>
+                  <option value="Others" {% if dept == 'Others' %}selected{% endif %}>Others</option>                  
+              </select>
+          </div>
+
+  
+
+      
+      </div>
+      <button type="submit" class="btn-submit">Add User</button>
+  </form>
+</div>
+
+</div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const facultyRoleSelect = document.getElementById('faculty-role-select');
+  const facultyDeptSelect = document.getElementById('faculty-dept-select');
+
+  facultyRoleSelect.addEventListener('change', (e) => {
+    const selectedRole = e.target.value;
+    const deptOptions = [...facultyDeptSelect.options];
+
+    // Hide all options initially
+    deptOptions.forEach((option) => {
+      option.style.display = 'none';
+    });
+
+    // Show relevant options based on selected role
+    if (selectedRole === 'Placement Cell Staff') {
+      // Show only Others
+      deptOptions.forEach((option) => {
+        if (option.value === 'Others') {
+          option.style.display = 'block';
+        }
+      });
+    } else if (['Placement Coordinator', 'JA', 'HOD'].includes(selectedRole)) {
+      // Show all except Others and All
+      deptOptions.forEach((option) => {
+        if (option.value !== 'Others' && option.value !== 'All') {
+          option.style.display = 'block';
+        }
+      });
+    } else if (['ALL'].includes(selectedRole)) {
+      // Show only All
+      deptOptions.forEach((option) => {
+        if (option.value === 'All') {
+          option.style.display = 'block';
+        }
+      });
+    }
+  });
+});
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}
+
+<!-- End demo content -->
+</body>
+</html>

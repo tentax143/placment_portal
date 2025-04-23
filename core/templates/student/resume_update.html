@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    {% block maincontent %}
+    <title>RIT PLACEMENT - Upload Resume</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+</head>
+
+<body>
+
+<div class="container mt-5">
+    <h5>Upload Resume</h5>
+
+    {% comment %} <div class="modal" id="placementModal"> {% endcomment %}
+        {% comment %} <div class="modal-content" style="margin-top: 15%;">
+            <span class="close" id="closeModal">&times;</span> {% endcomment %}
+            <form action="{% url 'upload_resume' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+                <div class="modal-form-item" id="offerLetterSection">
+                    <label for="upload_resume">Upload Resume:</label>
+                    <input type="file" id="upload_resume" name="resume" accept="application/pdf">
+                </div>
+                {% comment %} <div class="modal-form-item">{% endcomment %}
+                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                </div> 
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+{% comment %} <script>
+// Handle form submission using AJAX
+document.getElementById('placementForm').addEventListener('submit', function (e) {
+    e.preventDefault();  // Prevent default form submission
+
+    var formData = new FormData(this);
+
+    fetch("{% url 'upload_resume' student_regno=student.student_regno %}", {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Upload successful!");
+            location.reload();  // Reload the page or update the DOM as needed
+        } else {
+            alert("Error: Unable to upload resume.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>{% endcomment %}
+
+{% endblock %}
+</body>
+</html>

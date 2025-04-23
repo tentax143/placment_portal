@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>RIT CGPA TRACKER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/samplefromstyle.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+{% block maincontent %}
+<style>
+    select {
+        width: 20em;
+        width: 20vw;
+        padding: 7.5px;
+    }
+    #department-counts {
+        display: flex; 
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .card {
+        transition: transform 0.2s;
+        height: 200px;
+        width: 0px;
+    }
+    .card:hover {
+        transform: scale(1.05);
+    }
+    .card-custom {
+        border-radius: 10px;
+        width: 80px;
+        height: 80px;
+    }
+    .view-more-btn {
+        font-size: 20px;
+        padding: 5px 5px;
+    }
+    .chart-container {
+        display: flex; 
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+    .pie-chart {
+        width: 150px; /* Width of the pie chart */
+        height: 150px; /* Height of the pie chart */
+        border-radius: 50%; /* Make it circular */
+        background: conic-gradient(
+            #4CAF50 {{ data.course_content }}%, /* Adjust color and size */
+            #2196F3 {{ data.lecture_sessions }}%, 
+            #FFC107 {{ data.practical_sessions }}%, 
+            #FF5722 {{ data.interactive_sessions }}%, 
+            #3F51B5 {{ data.course_material }}%, 
+            #9C27B0 {{ data.usefulness }}%, 
+            #009688 {{ data.knowledge_improvement }}%, 
+            #8BC34A {{ data.timely_communication }}%, 
+            #FF9800 {{ data.overall_arrangement }}%, 
+            #F44336 {{ data.content_relevance }}%, 
+            #795548 {{ data.resource_person }}% 
+        );
+        position: relative;
+        margin: 10px; /* Space between pie charts */
+    }
+    .pie-label {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: bold;
+        text-align: center;
+    }
+</style>
+
+<div class="page-content p-5" id="content">
+    <!-- Sidebar Collapse -->
+    <div class="sidebarCollapse" style="display: flex; justify-content: space-between; align-items: center;">
+        <button id="sidebarCollapse" type="button" class="btn btn-light rounded-pill shadow-sm px-4">
+            <i class="fa fa-bars mr-2 toggleicon"></i>
+            <small class="text-uppercase font-weight-bold">Menu</small>
+        </button>
+        <div id="count_div" style="flex-grow: 1; display: flex; justify-content: center;">
+            <!-- Placement data will be inserted here -->
+        </div>
+        <a href="" hidden id="django-message">{{message|default:0}}</a>
+    </div>
+
+    <!-- Trainer Dropdown and Feedback Chart -->
+    <div class="title">
+        <h2 class="display-5" style="margin-bottom: .9rem;">Trainer Feedback</h2>
+    </div>
+    <div class="container">
+        <div class="row">
+            <!-- Trainer Dropdown -->
+            <div class="col-md-6">
+                <label for="trainerDropdown">Select a Trainer</label>
+                <select id="trainerDropdown" class="form-control">
+                    <option value="" disabled selected>Select a trainer</option>
+                    {% for trainer in trainers %}
+                    <option value="{{ trainer.trainer_id }}">{{ trainer.trainer_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Feedback Chart Placeholder -->
+            <div>
+                <h2>Trainer Feedback Chart</h2>
+                <img id="feedbackChart" src="" alt="Feedback Chart" />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("trainerDropdown").addEventListener("change", function() {
+                var trainerId = this.value;
+                if (trainerId) {
+                    fetch(`/feedback/${trainerId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.image) {
+                            console.log("Image exist");
+                            document.getElementById('feedbackChart').src = data.image;
+                        } else {
+                            console.error('No image returned');
+                        }
+                    })
+                    .catch(error => console.error('Error fetching feedback:', error));
+                }
+            });
+
+            
+        });
+    </script>
+
+{% endblock %}
+</body>
+</html>

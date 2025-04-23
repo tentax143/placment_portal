@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <title>Ramco Institute of Technology</title>
+    <style>
+        body {
+            background-image: url("static/images/background.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        /* Big card container with a smaller size */
+.card-container.smaller-card {
+    max-width: 500px; /* Reduce the width of the container */
+    margin: 0 auto; /* Center align */
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px; /* Adjusted padding */
+    transition: all 0.3s ease;
+}
+
+.card-container.smaller-card:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-container.smaller-card {
+        max-width: 90%; /* Make it full width for smaller screens */
+        padding: 15px;
+    }
+}
+
+/* Styling for Home Button */
+.custom-home-btn {
+    background-color: #005073;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-home-btn:hover {
+    background-color: #007399;
+    color: #fff;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+/* Big card container */
+.card-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    transition: all 0.3s ease;
+}
+
+.card-container:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Form input styling */
+.custom-input {
+    border: 2px solid #005073;
+    border-radius: 5px;
+    padding: 10px;
+    transition: border-color 0.3s ease;
+}
+
+.custom-input:focus {
+    border-color: #007399;
+    box-shadow: 0 0 8px rgba(0, 115, 153, 0.5);
+}
+
+/* Login Button */
+.custom-login-btn {
+    background-color: #005073;
+    border: none;
+    padding: 10px 40px;
+    border-radius: 5px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-login-btn:hover {
+    background-color: #007399;
+    color: #fff;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+/* Heading styling */
+h2 {
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 1.5px;
+    color: #005073;
+}
+
+/* Alert styling */
+.alert-warning {
+    background-color: #fffbe6;
+    color: #d9534f;
+    border: 1px solid #f0ad4e;
+    font-size: 16px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="rit"></div>
+    <img src="{% static 'images/rit.jpg' %}" alt="RIT Logo">
+
+    <div class="container card-container smaller-card shadow-lg p-4">
+
+    <div class="mb-4">
+        <a href="{% url 'index' %}" class="btn btn-primary btn-lg custom-home-btn">
+            Home
+        </a>
+    </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="alert alert-warning text-center font-weight-bold">
+                    <p style="color:red;">NOTE: Contact Administrator to get Login Credentials</p>
+                </div>
+                <h6 class="text-center text-primary font-weight-bold mb-4">Login to Placement Dashboard</h6>
+                <form method="POST" autocomplete="off">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="faculty_id" class="font-weight-bold">Faculty ID / Reg No.</label>
+                        <input type="text" class="form-control custom-input" id="faculty_id" name="faculty_id" placeholder="Enter your Faculty ID / Reg No." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="font-weight-bold">Password</label>
+                        <input type="password" class="form-control custom-input" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg custom-login-btn">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function () {
+            window.history.go(0);
+        };
+    </script>
+</body>
+</html>

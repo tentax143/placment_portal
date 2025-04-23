@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Modal with Countdown</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Button to trigger the modal */
+        .open-modal-btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .open-modal-btn:hover {
+            background-color: #218838;
+        }
+
+        /* Modal Structure */
+        #companyModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fff;
+            width: 70%;
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: slideIn 0.4s ease-out;
+            height: 70vh; /* Increase height for vertical length */
+            overflow-y: auto;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Close button */
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close-btn:hover {
+            color: #d9534f;
+        }
+
+        /* Content inside modal */
+        .modal-header h2 {
+            margin-bottom: 15px;
+            color: #28a745;
+        }
+
+        .modal-body {
+            margin-top: 20px;
+        }
+
+        .modal-body h5 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .content-div, .countdown-div, .willingness-div {
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        /* Countdown Timer Styling */
+        .countdown-div {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+            color: #856404;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Trigger Button -->
+<button class="open-modal-btn" onclick="showModal()">Show Company Details</button>
+
+<!-- Modal Structure -->
+<div id="companyModal">
+    <div class="modal-content">
+        <!-- Close Button -->
+        <span class="modal-close-btn" onclick="closeModal()">&times;</span>
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h2 id="companyName">Ramco Systems</h2>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <h5>Company Placement Process</h5>
+            <div id="companyDescription" class="content-div">
+                <div class="description">
+                    <strong>Description:</strong> Ramco Systems Placement Process<br>
+                    The selection process typically consists of:<br>
+                    <strong>Round 1:</strong> Online Aptitude Test<br>
+                    Assessing technical skills, problem-solving abilities, and logical reasoning.<br>
+                    <strong>Duration:</strong> 60-90 minutes<br>
+                    <strong>Round 2:</strong> Technical Interview<br>
+                    Evaluating programming skills, coding expertise, and technical knowledge.<br>
+                    Focus on Java, Python, C++, Data Structures, and Algorithms.<br>
+                    <strong>Round 3:</strong> HR Interview<br>
+                    Assessing communication skills, personality, and cultural fit. Discussion on career goals, motivation, and job expectations.<br>
+                    Additional Rounds (if required) may involve group discussions or further technical interviews.
+                </div>
+            </div>
+
+            <!-- Countdown Timer Section -->
+            <div id="countdown" class="countdown-div">Loading...</div>
+
+            <!-- Willingness Section -->
+            <div id="willingness" class="willingness-div" style="display: none;">Willingness details go here.</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Show the modal
+    function showModal() {
+        document.getElementById('companyModal').style.display = 'flex';
+        startCountdown();
+    }
+
+    // Close the modal
+    function closeModal() {
+        document.getElementById('companyModal').style.display = 'none';
+    }
+
+    // Countdown Timer Function
+    function startCountdown() {
+        var countdownElement = document.getElementById('countdown');
+        var countdownTime = 60; // Set the timer to 60 seconds
+
+        var countdownInterval = setInterval(function() {
+            countdownElement.innerHTML = countdownTime + " seconds remaining";
+
+            // Check if time has reached zero
+            if (countdownTime <= 0) {
+                clearInterval(countdownInterval);
+                countdownElement.innerHTML = "Time's up!";
+            }
+
+            countdownTime--; // Decrement the time by 1 second
+        }, 1000); // Update the countdown every second
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>RIT PLACEMENT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<style>
+    /* Card styling */
+    .container {
+    position: relative;
+    width: 50%;
+    height: 500px; /* Set the desired height for the container */
+    padding: 30px;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Card styling to take 50% of the container height */
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    height: 50%; /* 50% of the container height */
+    display: flex;
+    flex-direction: column;
+  }
+
+  
+    .card:hover {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+  
+    .card-img-top {
+      height: 50%; /* Fixed height for the image */
+      object-fit: cover;
+    }
+  
+    .card-body {
+      text-align: center;
+      flex-grow: 1; /* Ensures body grows to fill available space */
+      overflow: hidden;
+    }
+  
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+  
+    .card-text {
+      font-size: 0.9rem;
+      color: #666;
+    }
+  
+    /* Container and row layout */
+    .container {
+      position: relative;
+      width: 100%;
+      padding: 30px;
+      background-color: #fff;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+  
+    .container header {
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+  
+    /* Flexbox for responsiveness */
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+  
+    .col-md-3 {
+      flex: 1 1 20%; /* Cards will be 20% width of the parent, adjusting to screen size */
+      min-width: 250px; /* Minimum width for small screens */
+      max-width: 300px; /* Maximum width to prevent too large on larger screens */
+      padding: 10px;
+    }
+  
+    /* Responsive breakpoints for smaller screens */
+    @media (max-width: 768px) {
+      .col-md-3 {
+        flex: 1 1 45%; /* Two cards per row on smaller screens */
+      }
+    }
+  
+    @media (max-width: 576px) {
+      .col-md-3 {
+        flex: 1 1 100%; /* Full width on very small screens */
+      }
+    }
+  
+  </style>
+<body>
+ 
+{% block maincontent %}
+
+<!-- Page content holder -->
+<div class="page-content p-5" id="content">
+    <div class="row">
+        <div class="container" style="height: 50vh; overflow: auto;">
+            <h2 id="companyName" style="color: green; ">All Companies</h2>
+
+            <div class="row">
+                {% for company in companies %}
+                <div class="col-md-3" onclick="showCompanyDetails('{{ company.company_id }}')"  >
+                    <div class="card mb-4 shadow-sm" >
+                        <img class="card-img-top" src="{{ company.company_image.url }}" alt="{{ company.company_name }}" style="height: 120px;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ company.company_name }}</h5>
+                            <p class="card-text"><strong>Package :</strong> {{ company.company_ctc }} LPA</p>
+                            <p class="card-text"><strong>Location :</strong> {{ company.company_location }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row"><div class="container" style="height: 40vh;">
+        <h5>About Companies</h5>
+        <div class="right-panel" id="rightPanel">
+            <h2 id="companyName" style="color: green;">Company Details</h2>
+            <div id="companyDescription" class="content-div">
+                <!-- Detailed company description will be displayed here -->
+            </div>
+            <div id="countdown" class="countdown-div">
+                <!-- Countdown will be displayed here -->
+            </div>
+            <div id="willingness" class="willingness-div" style="display: none;">
+                
+            </div>
+        </div>
+        </div></div>
+        
+        
+        
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    
+        function parseLastDate(dateString) {
+            // Split the date string
+            var parts = dateString.split('-');
+            if (parts.length === 3) {
+                // Convert to JavaScript Date (months are 0-based, hence subtract 1)
+                var lastDate = new Date(parts[0], parts[1] - 1, parts[2]);
+                // Set time to 11:59:59 PM
+                lastDate.setHours(23, 59, 59, 999);
+                return lastDate;
+            }
+            return null;
+        }
+        
+        function calculateCountdown(lastDateString) {
+            var lastDateObj = parseLastDate(lastDateString);
+        
+            // Check if the date is valid
+            if (!lastDateObj || isNaN(lastDateObj.getTime())) {
+                console.error('Invalid date:', lastDateString);
+                return 'Invalid date';
+            }
+        
+            var now = new Date();
+            var timeDifference = lastDateObj - now; // Difference in milliseconds
+        
+            if (timeDifference <= 0) {
+                return 'The deadline has passed.';
+            }
+        
+            var days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+        
+            return `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+        }
+        
+    });
+    
+        </script>
+
+        <script>
+       let selectedCompanyId = null;
+
+       function showCompanyDetails(companyId) {
+console
+
+
+var companyDescription = document.getElementById('companyDescription');
+
+// Fetch company details using AJAX
+fetch(`/company/${companyId}/`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            companyDescription.innerHTML = '<p>Company not found</p>';
+            console.log(data.error);
+        } else {
+            companyDescription.innerHTML = `
+                <h2>${data.company_name}</h2>
+                <p><strong>Location:</strong> ${data.company_location}</p>
+                <p><strong>Role:</strong> ${data.company_role}</p>
+                <p><strong>Skill Set:</strong> ${data.company_skill}</p>
+                <p><strong>Eligibility:</strong> ${data.company_eligibility}</p>
+                <p><strong>Description:</strong> ${data.company_description}</p>
+                <p><strong>Willing Count:</strong> ${data.willing_count}</p>
+                <p><strong>Not Willingness Count:</strong> ${data.not_willing_count}</p>
+                <p><strong>Attended Count:</strong> ${data.attended_count}</p>
+                <p><strong>Placement Offer Count:</strong> ${data.placement_offer_count}</p>
+            `;
+        }
+    });
+}
+</script>
+{% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+</html>

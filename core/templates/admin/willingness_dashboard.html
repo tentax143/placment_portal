@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>RIT CGPA TRACKER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/samplefromstyle.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+ 
+<!-- End vertical navbar -->
+{% block maincontent %}
+<style>
+    select {
+        width: 20em;
+        width: 20vw;
+        padding: 7.5px;
+    }
+    .custom-card {
+        flex: 0 0 10.5%; /* 100% / 8 = 12.5% */
+        max-width: 10.5%; /* 100% / 8 = 12.5% */
+        margin: 0.5rem; /* Adjust this to change the spacing between cards */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: to add a subtle shadow */
+    }
+    
+    #department-counts {
+        display: flex; /* Use flexbox to align cards */
+        flex-wrap: wrap; /* Allow wrapping of cards if needed */
+        justify-content: space-between; /* Space cards evenly */
+    }
+    .card {
+        transition: transform 0.2s; /* Animation on hover */
+        height: 200px;
+        width : 0px;
+    }
+    
+    .card:hover {
+        transform: scale(1.05); /* Slight zoom on hover */
+    }
+    
+    .card-top {
+        background-color: #f8f9fa; /* Light background for the header */
+        font-weight: bold;
+    
+    }
+
+    .card-custom {
+        border-radius: 10px;
+        width: 80px;  /* Fixed width */
+        height: 80px; /* Fixed height */
+        padding: 0;
+    }
+    
+    .card-footer-custom {
+        border-radius: 10px 10px 0 0;
+        padding: 5px;
+        text-align: center;
+    }
+    
+    .card-body-custom {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+    
+    .view-more-btn {
+        font-size: 20px;
+        padding: 5px 5px;
+    }
+</style>
+</head>
+<body>
+<div class="page-content p-5" id="content">
+
+    <div class="sidebarCollapse" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <button id="sidebarCollapse" type="button" class="btn btn-light rounded-pill shadow-sm px-4">
+                <i class="fa fa-bars mr-2 toggleicon"></i>
+                <small class="text-uppercase font-weight-bold">Menu</small>
+            </button>
+        </div>
+        <div id="count_div" style="flex-grow: 1; display: flex; justify-content: center;">
+            <!-- The placement data will be inserted here -->
+        </div>
+        <a href="" hidden id="django-message">{{message|default:0}}</a>
+    </div>
+
+    <div class="title">
+        <h2 class="display-5" style="margin-bottom: .9rem;">Company Table</h2>
+
+    </div>
+    <div class="row">
+        <div class="container table_container">
+
+            <header>Filter Form</header>
+            <form autocomplete="off" enctype="multipart/form-data" id="filterForm">
+                {% csrf_token %}
+                <div class="form first">
+                    <div class="details personal">
+                        <div class="fields">
+                            <div class="details personal">
+                                <div class="fields">
+                                    {% comment %} {% if  dept ==  'All' or dept == 'Others' %} {% endcomment %}
+
+
+
+                                    <div class="availability-input-field">
+                                        <label>Batch</label>
+                                        <select id="batch" name="batch" class="form-control">
+                                            <option value="" disabled selected>Select an batch</option>
+                                        </select>
+                                    </div>
+                                    <div class="availability-input-field">
+                                        <label>Department</label>
+                                        <select id="department" name="department" class="form-control" {% if dept != 'All' and dept != 'Others' %}disabled{% endif %}>
+                                            <option value="" hidden >Select Department</option>
+                                            <option value="All" {% if dept == 'All' %}{% endif %}>All Department</option>
+                                            <option value="B.TECH AD"  {% if dept == 'B.TECH AD' %}selected{% endif %}>AD-ARTIFICIAL INTELLIGENCE AND DATA SCIENCE</option>
+                                            <option value="B.E CIVIL"  {% if dept == 'B.E CIVIL' %}selected{% endif %}>CE-CIVIL ENGINEERING</option>
+                                            <option value="B.TECH CSBS" {% if dept == 'B.TECH CSBS' %}selected{% endif %}>CB-COMPUTER SCIENCE AND BUSINESS SYSTEM</option>
+                                            <option value="B.E CSE" {% if dept == 'B.E CSE' %}selected{% endif %}>CS-COMPUTER SCIENCE AND ENGINEERING</option>
+                                            <option value="B.E EEE" {% if dept == 'B.E EEE' %}selected{% endif %}>EE-ELECTRICAL AND ELECTRONICS ENGINEERING</option>
+                                            <option value="B.E ECE" {% if dept == 'B.E ECE' %}selected{% endif %}>EC-ELECTRONICS AND COMMUNICATION ENGINEERING</option>
+                                            <option value="B.TECH IT" {% if dept == 'B.TECH IT' %}selected{% endif %}>IT-INFORMATION TECHNOLOGY</option>
+                                            <option value="B.E MECH" {% if dept == 'B.E MECH' %}selected{% endif %}>ME-MECHANICAL ENGINEERING</option>
+                                            <option value="Others" {% if dept == 'Others' %}selected{% endif %}>Others</option>
+                                        </select>
+                                    </div>
+                            {% comment %} {% if  dept ==  'All' or dept == 'Others' %} {% endcomment %}
+                            <div class="availability-input-field">
+                                <label>Company</label>
+                                <select id="company" name="company" class="form-control">
+                                    <option value="" hidden selected>Select Company</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </form>
+
+
+            <main class="table" id="customers_table">
+                <section class="table__header">
+                    <div class="input-group">
+                        <input type="text" placeholder="Search Data...">
+                        <img src="{% static 'images/search.png' %}" alt="">
+                    </div>
+
+                    <div class="export__file" style="display: flex;">
+                        <P>Export   </P>
+                      <div class="">
+
+                        <label for="export-file" class="export__file-btn" title="Export File"> </label>
+                        <input type="checkbox" id="export-file">
+                        <div class="export__file-options" style="z-index: 2000;">
+                            <label>Export As &nbsp;&nbsp; &#10140;</label>
+                            <label for="export-file" class="btn btn-primary" style="color: black;" id="exportExcel">EXCEL <img src="{% static 'images/excel.png' %}" alt=""></label>
+                            <!-- <label for="export-file" class="btn btn-primary" style="color: black;" id="exportPdf">PDF <img src="{% static 'images/pdf.png' %}" alt=""></label> -->
+                        </div>
+                      </div>
+                    </div>
+                </section>
+                <section class="table__body">
+                    <table id="example" class="display nowrap" style="width:100%">
+<thead>
+                            <tr>
+
+                                <th>Reg No</th>
+                                <th>Student Name</th>
+                                <th>Dept</th>
+                                <th>Batch</th>
+                                <th>CGPA</th>
+                                <th>Company</th>
+                                <th>CTC</th>
+                                <th>Job Role</th>
+                                <th>SSLC</th>
+                                <th>HSC</th>
+                                <th>Hist. of. Arrears</th>
+                                <th>Back Logs</th>
+                                <th>Diploma</th>
+                                <th>Contact Number</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="companyTableBody">
+                            <tr>
+                                {% comment %} <td>953622243055</td>
+                                <td>MAHARAJAN A</td>
+                                <td>B.TECH AD</td>
+                                <td>2022-26</td>
+                                <td>7.51</td>
+                                <td>TCS</td>
+                                <td>Internship Offer</td>
+                                <td>4</td>
+                                <td>4.00</td>
+                                <td>6379897269</td> {% endcomment %}
+                            </tr>`
+                        </tbody>
+                    </table>
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const currentYear = new Date().getFullYear();
+    const startYear = 2018;
+    const yearSelect = document.getElementById('batch');
+
+    for (let year = currentYear; year >= startYear; year--) {
+        const option = document.createElement('option');
+        const endYear = (year + 4).toString(); // Get last two digits of the end year
+        option.value = year + '-' + endYear;
+        option.textContent = year + '-' + endYear;
+        yearSelect.appendChild(option);
+    }
+</script>
+
+
+<script>
+// Function to perform the AJAX request and update the table
+function fetchFilteredData() {
+    // Get form data
+    var department = document.getElementById('department').value || '';  // Send empty string if not selected
+    var batch = document.getElementById('batch').value || '';
+    var company = document.getElementById('company').value || '';
+
+
+    // Create query parameters for the GET request
+    var params = new URLSearchParams({
+        department: department,
+        batch: batch,
+        company: company,
+    });
+
+    // Perform the AJAX request
+    fetch(`/admin/willingness_table_view/?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest' // To indicate it's an AJAX request
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Populate the table with the returned data
+        var tableBody = document.getElementById('companyTableBody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        // Check if there is data
+        if (data.data.length > 0) {
+            data.data.forEach(item => {
+                var row = `<tr>
+                    <td>${item.reg_no}</td>
+                    <td>${item.student_name}</td>
+                    <td>${item.dept}</td>
+                    <td>${item.batch}</td>
+                    <td>${item.cgpa}</td>
+                    <td>${item.company}</td>
+                    <td>${item.stipend_or_ctc}</td>
+                    <td>${item.job_role}</td>
+                    <td>${item.sslc}</td>
+                    <td>${item.hsc}</td>
+                    <td>${item.history_of_arrear}</td>
+                    <td>${item.bag_of_log}</td>
+                    <td>${item.diploma}</td>
+
+
+                    <td>${item.contact_number}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        } else {
+            // If no data, show a "No records found" message
+            tableBody.innerHTML = `<tr><td colspan="10">No records found</td></tr>`;
+        }
+
+        // Update placement count data
+        updatePlacementData(data.placement_data_core_count, data.placement_data_non_core_count);
+
+        console.log(data);
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+
+// Attach the fetchFilteredData function to onchange events
+document.getElementById('department').addEventListener('change', fetchFilteredData);
+document.getElementById('batch').addEventListener('change', fetchFilteredData);
+document.getElementById('company').addEventListener('change', fetchFilteredData);
+
+
+</script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+
+            // Fetch the list of companies on page load
+            fetchCompanies();
+        
+            function fetchCompanies() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', "{% url 'get_companies' %}", true); // Replace with your URL
+        
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        console.log("List of Companies:", response.companies);
+                        // Populate the select dropdown with companies
+                        populateCompanySelect(response.companies);
+                    } else {
+                        console.error('Error fetching companies: ' + xhr.status);
+                    }
+                };
+        
+                xhr.onerror = function() {
+                    console.error('An error occurred during the AJAX request');
+                };
+        
+                xhr.send();
+            }
+        
+            function populateCompanySelect(companies) {
+                var companySelect = document.getElementById('company'); // Select the dropdown element
+                companySelect.innerHTML = ''; // Clear any existing options
+                console.log("Hello")
+                // Create a default option
+                var defaultOption = document.createElement('option');
+                defaultOption.value = "";
+                defaultOption.hidden = true;
+                defaultOption.selected = true;
+                defaultOption.textContent = "Select Company";
+                companySelect.appendChild(defaultOption);
+                
+                console.log("Hlo")
+                // Populate the select dropdown with options for each company
+                companies.forEach(function(company) {
+                    var option = document.createElement('option');
+                    option.value = company.company_id; // Assuming each company object has an 'id' field
+                    option.textContent = company.company_name; // Assuming each company object has a 'name' field
+                    companySelect.appendChild(option);
+                });
+                console.log("Hlooo")
+            }
+        });
+        
+    </script>
+<script>
+    
+    
+    function checkFields() {
+        var form = document.getElementById('filterForm');
+        var filterButton = document.getElementById('filterButton');
+        var fields = form.querySelectorAll('input, select');
+        var isAnyFieldFilled = Array.from(fields).some(field => field.value.trim() !== '');
+    
+        filterButton.disabled = !isAnyFieldFilled;
+    }
+    
+    // Add event listeners to all input and select elements to check the fields on change
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var form = document.getElementById('filterForm');
+        var fields = form.querySelectorAll('input, select');
+    
+        fields.forEach(field => {
+            field.addEventListener('input', checkFields);
+            field.addEventListener('change', checkFields);
+        });
+    });
+    </script>
+<!-- Include necessary JavaScript libraries -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+<script src="{% static 'JS/multiselect-dropdown.js' %}"></script>
+<!-- <script src="{% static 'JS/multiselect-dropdown.js' %}"></script> -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the message from the DOM
+        const message = document.getElementById('django-message');
+        if (message.textContent != 0 ) {
+            // Show the alert box with the message
+            alert(message.textContent);
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('.input-group input');
+    const tableBody = document.querySelector('.table__body tbody');
+
+    searchInput.addEventListener('input', function() {
+        const searchValue = searchInput.value.toLowerCase();
+        const rows = tableBody.querySelectorAll('tr');
+
+        rows.forEach(row => {
+            const rowText = row.textContent.toLowerCase();
+            if (rowText.includes(searchValue) || searchValue === '') {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+
+</script>
+
+
+<script>
+
+
+    // Export table to Excel
+    document.getElementById('exportExcel').addEventListener('click', function() {
+        var wb = XLSX.utils.table_to_book(document.getElementById('example'), { sheet: "Sheet JS" });
+        XLSX.writeFile(wb, 'TableData.xlsx');
+    });
+
+</script>
+
+
+{% endblock %}
+
+<!-- End demo content -->
+
+
+
+</body>
+</html>
